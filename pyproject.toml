@@ -13,3 +13,18 @@ dependencies = [
     "wagtail>=6.4.1",
     "wagtail-bakery>=0.8.0",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "pythonkr_backend.settings"
+pythonpath = ["pythonkr_backend"]
+testpaths = [
+    "pythonkr_backend/pythonkr_backend",
+    "pythonkr_backend/pythonkr",
+]
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+
+[dependency-groups]
+dev = [
+    "pytest-django>=4.10.0",
+    "ruff>=0.9.10",
+]
