@@ -3,8 +3,8 @@ name: pk web site backend deployment
 on:
   workflow_run:
     workflows: ["pk web site backend testing"]
-    types:
-      - completed
+    types: [completed]
+    branches: [main]
 
 jobs:
   deploy:
