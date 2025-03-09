@@ -1,0 +1,8 @@
+{% extends 'pao/pao_base.html' %}
+{% load wagtailcore_tags %}
+
+{% block title %}Home - Python Asia - {{ page.title }}{% endblock %}
+
+{% block content %}
+    {{ page.content|richtext }}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'pao/pao_base.html' %}
+{% load wagtailcore_tags %}
+
+{% block title %}Home - Python Asia - {{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Python Asia Events</h1>
+    <div class="list-group">
+    {% for event in page.get_children.live %}
+    <a href="{% pageurl event %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ event.title }}</h5>
+          <small class="text-muted">{{ event.event_date }}</small>
+        </div>
+        <p class="mb-1">{{ event.content | richtext }}</p>
+        <small class="text-muted">details</small>
+    </a>
+    {% empty %}
+        Sorry there is no Events
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% wagtail_site as current_site %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Python Asia{% endblock title %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.5/cdn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            padding-top: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            background-color: #f8f9fa;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% pageurl current_site.root_page %}">
+                <img src="{% static 'pao/01-Main2.png' %}" alt="Python Asia Organization Logo"
+                    height="80"/>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% for menu_page in current_site.root_page.get_children.live.in_menu %}
+                        <li class="nav-item"><a class="nav-link" href="{% pageurl menu_page %}">{{menu_page.title}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-5 pt-5">
+        {% block content %}{% endblock content %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="sponsor-footer mt-5">
+        <div class="container text-center">
+            <h4 class="text-center mb-4">Our Sponsors</h4>
+            <div class="row justify-content-center">
+                {% for sponsor in sponsors %}
+                    <div class="col-md-3 col-6 text-center mb-3">
+                        <img src="{{ sponsor.logo }}" alt="{{ sponsor.name }}" class="img-fluid" style="max-height: 60px;">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if looking_for_sponsors %}
+        <h4 class="text-center mb-4">looking for sponsors!</h4>
+        {% endif %}
+    </footer>
+</body>
+</html>

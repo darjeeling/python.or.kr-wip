@@ -1,0 +1,22 @@
+{% extends 'pao/pao_base.html' %}
+{% load wagtailcore_tags %}
+
+{% block title %}Home - Python Asia - {{ page.title }}{% endblock %}
+
+{% block content %}
+<div>
+    <h2 class="mb-4">{{ page.title }} of Python Asia</h2>
+    {% for community in page.get_children.live %}
+    <a href="{% pageurl community %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ community.title }}</h5>
+          <small class="text-muted">{{ community.country }}</small>
+        </div>
+        <p class="mb-1">{{ community.content | richtext }}</p>
+        <small class="text-muted">details</small>
+    </a>
+    {% empty %}
+        Sorry there is no {{ page.title }}
+    {% endfor %}
+</div>
+{% endblock %}
