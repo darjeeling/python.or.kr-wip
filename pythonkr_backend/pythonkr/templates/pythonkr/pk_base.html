@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Python Asia{% endblock title %}</title>
+    <title>{% block title %}Python Korea{% endblock title %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.5/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
@@ -59,18 +59,7 @@
     <!-- Footer -->
     <footer class="sponsor-footer mt-5">
         <div class="container text-center">
-            <h4 class="text-center mb-4">Our Sponsors</h4>
-            <div class="row justify-content-center">
-                {% for sponsor in sponsors %}
-                    <div class="col-md-3 col-6 text-center mb-3">
-                        <img src="{{ sponsor.logo }}" alt="{{ sponsor.name }}" class="img-fluid" style="max-height: 60px;">
-                    </div>
-                {% endfor %}
-            </div>
         </div>
-        {% if looking_for_sponsors %}
-        <h4 class="text-center mb-4">looking for sponsors!</h4>
-        {% endif %}
     </footer>
 </body>
 </html>
