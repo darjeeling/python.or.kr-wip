@@ -10,7 +10,7 @@ services:
 
   web:
     build: .
-    command: /app/entroypoint.sh
+    command: /app/entrypoint.sh
     volumes:
       - ./pythonkr_backend:/app/pythonkr_backend
     ports:
