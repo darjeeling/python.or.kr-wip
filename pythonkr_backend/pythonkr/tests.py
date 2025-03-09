@@ -1,3 +1,6 @@
-from django.test import TestCase
+import pytest
 
-# Create your tests here.
+
+@pytest.mark.django_db
+def test_example():
+    assert 1 == 1
