@@ -3,6 +3,7 @@
 
 cd /app
 source .venv/bin/activate
+uv sync
 cd /app/pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.localtesting"
 ./manage.py migrate --no-input
