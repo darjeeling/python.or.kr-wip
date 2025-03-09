@@ -9,7 +9,7 @@ dependencies = [
     "gunicorn>=23.0.0",
     "httpx>=0.28.1",
     "markdown>=3.7",
-    "psycopg>=3.2.5",
+    "psycopg[binary]>=3.2.5",
     "wagtail>=6.4.1",
     "wagtail-bakery>=0.8.0",
 ]
