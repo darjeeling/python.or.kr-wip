@@ -9,7 +9,7 @@ DATABASES = {
         'HOST': 'db',
         'NAME': 'pk',
         'USER': 'pk',
-        'PASSWD': 'pktesting',
+        'PASSWORD': 'pktesting',
     }
 }
 
