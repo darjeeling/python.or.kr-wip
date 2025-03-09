@@ -1,0 +1,17 @@
+FROM python:3.12-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app
+
+# Copy the project into the image
+ADD . /app
+
+# Delete .sqlite3 files
+RUN find /app -name "*.sqlite3" -delete
+
+# Sync the project into a new environment, using the frozen lockfile
+RUN uv sync --frozen
+
+ENTRYPOINT [ "/app/entrypoint.sh" ]
