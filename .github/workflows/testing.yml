@@ -1,5 +1,5 @@
 # The name of the action
-name: pao web site backend testing
+name: pk web site backend testing
 # When the action is triggered
 on:
   push:

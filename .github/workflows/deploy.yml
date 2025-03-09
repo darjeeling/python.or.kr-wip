@@ -1,0 +1,31 @@
+name: pk web site backend deployment
+
+on:
+  workflow_run:
+    workflows: ["pk web site backend testing"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: executing remote ssh commands for update
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: 
+            cd python.or.kr && git pull
+
+      - name: executing remote ssh commands for deployment
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: 
+            cd python.or.kr && bash deploy_prod.sh
+ 
