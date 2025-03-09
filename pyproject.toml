@@ -11,4 +11,5 @@ dependencies = [
     "markdown>=3.7",
     "psycopg>=3.2.5",
     "wagtail>=6.4.1",
+    "wagtail-bakery>=0.8.0",
 ]
