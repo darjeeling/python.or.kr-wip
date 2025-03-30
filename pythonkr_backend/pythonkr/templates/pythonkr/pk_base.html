@@ -35,7 +35,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% pageurl current_site.root_page %}">
-                <img src="{% static 'pao/01-Main2.png' %}" alt="Python Asia Organization Logo"
+                <img src="{% static 'pythonkr/pythonkr-badge.png' %}" alt="Python Korea Logo"
                     height="80"/>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -53,7 +53,9 @@
 
     <!-- Main Content -->
     <main class="container mt-5 pt-5">
-        {% block content %}{% endblock content %}
+        {% block content %}
+            {{ page.content|richtext }}
+        {% endblock %}
     </main>
 
     <!-- Footer -->
