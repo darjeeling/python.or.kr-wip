@@ -23,6 +23,11 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
+Tailwind CSS 작업을 위해 다른 창에서 다음을 실행
+```
+$ python manage.py tailwind start
+```
+
 ## Django settings
 - pythonkr_backend.settings # local sqlite testing
 - pythonkr_backend.settings.localtesting  # docker compose testing

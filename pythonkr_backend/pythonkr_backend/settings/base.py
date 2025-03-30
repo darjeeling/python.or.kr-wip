@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "wagtailbakery",
     "tailwind",
     "theme",
+    "django_browser_reload",
     "pythonkr",
 ]
 
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'pythonkr_backend.urls'
