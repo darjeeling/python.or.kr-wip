@@ -17,7 +17,7 @@
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center py-4">
         <a class="navbar-brand" href="{% pageurl current_site.root_page %}">
-          <img src="{% static 'pythonkr/pythonkr-badge.png' %}" alt="Python Korea Logo" height="80"/>
+          <img class="h-12" src="{% static 'pythonkr/pythonkr-badge.png' %}" alt="Python Korea Logo"/>
         </a>
         <a href="#" class="text-xl font-bold text-gray-800">Python Korea</a>
         <div class="hidden md:flex space-x-4">
@@ -42,7 +42,9 @@
   </nav>
 
   <main class="container mx-auto px-4 py-8">
-  {% block content %}{{ page.content|richtext }}{% endblock %}
+    <div class="prose">
+    {% block content %}{{ page.content|richtext }}{% endblock %}
+    </div>
   </main>
 
   <footer class="bg-white border-t mt-12">
