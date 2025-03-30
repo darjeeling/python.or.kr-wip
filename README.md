@@ -1,17 +1,29 @@
 # python.or.kr-wip
 
-# 개발 환경 구축
+## 개발 환경 구축
 
- ```
- docker compose up
- ```
+### 1. Docker compose 이용 
 
- http://localhost:8080/cms/
+테스트용 계정 정보
+ - id: test
+ - password: test
 
- test / test
+```
+$ docker-compose up
+```
+ - 접속 URL: http://localhost:8080/cms/
 
 
-# settings
+### 2. Django runserver 이용
+
+```
+$ source .venv/bin/activate
+$ cd pythonkr_backend
+$ python manage.py migrate
+$ python manage.py runserver
+```
+
+## Django settings
 - pythonkr_backend.settings # local sqlite testing
 - pythonkr_backend.settings.localtesting  # docker compose testing
 - pythonkr_backend.settings.prod # production

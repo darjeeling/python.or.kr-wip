@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     "taggit",
     "bakery",
     "wagtailbakery",
+    "tailwind",
+    "theme",
     "pythonkr",
 ]
 
@@ -169,3 +171,10 @@ BUILD_DIR = os.path.join(BASE_DIR, "build")
 BAKERY_VIEWS = (
     "wagtailbakery.views.AllPublishedPagesView",
 )
+
+TAILWIND_APP_NAME = 'theme'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "0.0.0.0",
+]

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django>=5.1.7",
+    "django-tailwind[reload]>=3.8.0",
     "gunicorn>=23.0.0",
     "httpx>=0.28.1",
     "markdown>=3.7",
