@@ -5,11 +5,18 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.13.3",
     "django>=5.1.7",
     "gunicorn>=23.0.0",
     "httpx>=0.28.1",
+    "llm>=0.24.2",
+    "llm-gemini>=0.18.1",
+    "lxml>=5.3.2",
     "markdown>=3.7",
     "psycopg[binary]>=3.2.5",
+    "readtime>=3.0.0",
+    "requests>=2.32.3",
+    "tiktoken>=0.9.0",
     "wagtail>=6.4.1",
     "wagtail-bakery>=0.8.0",
 ]
