@@ -24,6 +24,7 @@ mkdir -p ${LOG_DIR}
 
 # update changes before update
 # git pull
+npm install
 source .venv/bin/activate
 uv sync
 cd pythonkr_backend
