@@ -17,40 +17,14 @@
   }
 },
 {
-  "model": "wagtailcore.page",
+  "model": "wagtailcore.site",
   "pk": 1,
   "fields": {
-    "path": "0001",
-    "depth": 1,
-    "numchild": 1,
-    "translation_key": "0bddbb0f-7275-4646-81a5-c89de32daa6c",
-    "locale": 1,
-    "latest_revision": null,
-    "live": true,
-    "has_unpublished_changes": false,
-    "first_published_at": null,
-    "last_published_at": null,
-    "live_revision": null,
-    "go_live_at": null,
-    "expire_at": null,
-    "expired": false,
-    "locked": false,
-    "locked_at": null,
-    "locked_by": null,
-    "title": "Root",
-    "draft_title": "Root",
-    "slug": "root",
-    "content_type": [
-      "wagtailcore",
-      "page"
-    ],
-    "url_path": "/",
-    "owner": null,
-    "seo_title": "",
-    "show_in_menus": false,
-    "search_description": "",
-    "latest_revision_created_at": null,
-    "alias_of": null
+    "hostname": "localhost",
+    "port": 80,
+    "site_name": "",
+    "root_page": 3,
+    "is_default_site": true
   }
 },
 {
