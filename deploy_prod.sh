@@ -23,7 +23,7 @@ fi
 mkdir -p ${LOG_DIR}
 
 # update changes before update
-# git pull
+git pull
 source .venv/bin/activate
 uv sync
 cd pythonkr_backend
