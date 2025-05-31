@@ -10,6 +10,13 @@
   }
 },
 {
+  "model": "wagtailcore.locale",
+  "pk": 1,
+  "fields": {
+    "language_code": "en"
+  }
+},
+{
   "model": "wagtailcore.page",
   "pk": 1,
   "fields": {
