@@ -24,13 +24,12 @@ mkdir -p ${LOG_DIR}
 
 # update changes before update
 # git pull
-npm install
 source .venv/bin/activate
 uv sync
 cd pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py migrate --no-input
-./manage.py tailwind build
+./manage.py tailwind install && ./manage.py tailwind build
 ./manage.py loaddata fixtures.json
 ./manage.py collectstatic  --clear --noinput
 gunicorn --workers=2  \

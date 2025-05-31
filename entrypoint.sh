@@ -2,13 +2,12 @@
 
 
 cd /app
-npm install
 source .venv/bin/activate
 uv sync
 cd /app/pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.localtesting"
 ./manage.py migrate --no-input
-./manage.py tailwind build
+./manage.py tailwind install && ./manage.py tailwind build
 ./manage.py loaddata fixtures.json
 ./manage.py collectstatic  --clear --noinput
 export DJANGO_SUPERUSER_PASSWORD=test
