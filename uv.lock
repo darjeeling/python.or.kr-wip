@@ -310,9 +310,9 @@ dependencies = [
     { name = "asgiref" },
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/41/84eaa4f2b7f764e56e01c4ee49aa12bdea30ae50fd0d3ef7c2690b0c4ec2/django_browser_reload-1.18.0.tar.gz", hash = "sha256:c5f0b134723cbf2a0dc9ae1ee1d38e42db28fe23c74cdee613ba3ef286d04735", size = 14319 }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/41/84eaa4f2b7f764e56e01c4ee49aa12bdea30ae50fd0d3ef7c2690b0c4ec2/django_browser_reload-1.18.0.tar.gz", hash = "sha256:c5f0b134723cbf2a0dc9ae1ee1d38e42db28fe23c74cdee613ba3ef286d04735", size = 14319, upload-time = "2025-02-06T22:14:40.799Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/9d/1322dc4bce4982d1eadd3a62802c996ae0303aad13d9ad88c1d35025f73d/django_browser_reload-1.18.0-py3-none-any.whl", hash = "sha256:ed4cc2fb83c3bf6c30b54107a1a6736c0b896e62e4eba666d81005b9f2ecf6f8", size = 12230 },
+    { url = "https://files.pythonhosted.org/packages/e4/9d/1322dc4bce4982d1eadd3a62802c996ae0303aad13d9ad88c1d35025f73d/django_browser_reload-1.18.0-py3-none-any.whl", hash = "sha256:ed4cc2fb83c3bf6c30b54107a1a6736c0b896e62e4eba666d81005b9f2ecf6f8", size = 12230, upload-time = "2025-02-06T22:14:36.87Z" },
 ]
 
 [[package]]
@@ -383,9 +383,9 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3c/ee/1065c57c87213f566d76b398f8391cd544380ef9661f7fdacdfe4264633c/django_tailwind-3.8.0.tar.gz", hash = "sha256:31c2f4a7879d685c2de0feaf0b63f246200b37337bea4d7dbafb59bc3f10c008", size = 8969 }
+sdist = { url = "https://files.pythonhosted.org/packages/3c/ee/1065c57c87213f566d76b398f8391cd544380ef9661f7fdacdfe4264633c/django_tailwind-3.8.0.tar.gz", hash = "sha256:31c2f4a7879d685c2de0feaf0b63f246200b37337bea4d7dbafb59bc3f10c008", size = 8969, upload-time = "2023-12-22T16:05:19.251Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/14/20c40882d9ee91f7a2a20d3c0175cf813340c02ae31c975ce567de2c7c67/django_tailwind-3.8.0-py3-none-any.whl", hash = "sha256:fa969c5b95d314b173fe2b2ed2cb2c03f2e2c94fdc2c01ff73a993fa159085da", size = 12936 },
+    { url = "https://files.pythonhosted.org/packages/cf/14/20c40882d9ee91f7a2a20d3c0175cf813340c02ae31c975ce567de2c7c67/django_tailwind-3.8.0-py3-none-any.whl", hash = "sha256:fa969c5b95d314b173fe2b2ed2cb2c03f2e2c94fdc2c01ff73a993fa159085da", size = 12936, upload-time = "2023-12-22T16:05:17.26Z" },
 ]
 
 [package.optional-dependencies]
@@ -893,6 +893,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/91/b8/04e9c59fae63357a39ca5cc033885d74576f98c0497fde066a2e5397413e/logfire-3.16.0-py3-none-any.whl", hash = "sha256:ac49c1a63c492e6ed205a3d49ee9ded318ca6e5af49c942465cade51c759605b", size = 194464, upload-time = "2025-05-14T13:27:17.943Z" },
 ]
 
+[package.optional-dependencies]
+django = [
+    { name = "opentelemetry-instrumentation-django" },
+]
+
 [[package]]
 name = "logfire-api"
 version = "3.16.0"
@@ -1109,6 +1114,37 @@ wheels = [
 ]
 
 [[package]]
+name = "opentelemetry-instrumentation-django"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-instrumentation-wsgi" },
+    { name = "opentelemetry-semantic-conventions" },
+    { name = "opentelemetry-util-http" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/93/8d194bda118fc4c369b9a3091c39eec384137b46f33421272359883c53d9/opentelemetry_instrumentation_django-0.54b1.tar.gz", hash = "sha256:38414f989f60e9dba82928e13f6a20a26baf5cc700f1d891f27e0703ca577802", size = 24866, upload-time = "2025-05-16T19:03:41.183Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e9/75/1b0ae1b8b7d6a85d5d54e8092c84b18669bd5da6f5ceb3410047674db3c0/opentelemetry_instrumentation_django-0.54b1-py3-none-any.whl", hash = "sha256:462fbd577991021f56152df21ca1fdcd7c4abdc10dd44254a44d515b8e3d61ca", size = 19541, upload-time = "2025-05-16T19:02:37.4Z" },
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-wsgi"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-semantic-conventions" },
+    { name = "opentelemetry-util-http" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a9/0f/442eba02bd277fae2f5eb3ac5f8dd5f8cc52ddbe080506748871b91a63ab/opentelemetry_instrumentation_wsgi-0.54b1.tar.gz", hash = "sha256:261ad737e0058812aaae6bb7d6e0fa7344de62464c5df30c82bea180e735b903", size = 18244, upload-time = "2025-05-16T19:04:08.448Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/aa/2f/075156d123e589d6728cc4c1a43d0335fa16e8f4a9f723a4af9267d91169/opentelemetry_instrumentation_wsgi-0.54b1-py3-none-any.whl", hash = "sha256:6d99dca32ce232251cd321bf86e8c9d0a60c5f088bcbe5ad55d12a2006fe056e", size = 14378, upload-time = "2025-05-16T19:03:15.074Z" },
+]
+
+[[package]]
 name = "opentelemetry-proto"
 version = "1.33.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1145,6 +1181,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5b/2c/d7990fc1ffc82889d466e7cd680788ace44a26789809924813b164344393/opentelemetry_semantic_conventions-0.54b1.tar.gz", hash = "sha256:d1cecedae15d19bdaafca1e56b29a66aa286f50b5d08f036a145c7f3e9ef9cee", size = 118642, upload-time = "2025-05-16T18:52:53.962Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0a/80/08b1698c52ff76d96ba440bf15edc2f4bc0a279868778928e947c1004bdd/opentelemetry_semantic_conventions-0.54b1-py3-none-any.whl", hash = "sha256:29dab644a7e435b58d3a3918b58c333c92686236b30f7891d5e51f02933ca60d", size = 194938, upload-time = "2025-05-16T18:52:38.796Z" },
+]
+
+[[package]]
+name = "opentelemetry-util-http"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/9f/1d8a1d1f34b9f62f2b940b388bf07b8167a8067e70870055bd05db354e5c/opentelemetry_util_http-0.54b1.tar.gz", hash = "sha256:f0b66868c19fbaf9c9d4e11f4a7599fa15d5ea50b884967a26ccd9d72c7c9d15", size = 8044, upload-time = "2025-05-16T19:04:10.79Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a4/ef/c5aa08abca6894792beed4c0405e85205b35b8e73d653571c9ff13a8e34e/opentelemetry_util_http-0.54b1-py3-none-any.whl", hash = "sha256:b1c91883f980344a1c3c486cffd47ae5c9c1dd7323f9cbe9fdb7cadb401c87c9", size = 7301, upload-time = "2025-05-16T19:03:18.18Z" },
 ]
 
 [[package]]
@@ -1622,6 +1667,7 @@ dependencies = [
     { name = "httpx" },
     { name = "llm" },
     { name = "llm-gemini" },
+    { name = "logfire", extra = ["django"] },
     { name = "lxml" },
     { name = "markdown" },
     { name = "psycopg", extra = ["binary"] },
@@ -1648,6 +1694,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llm", specifier = ">=0.24.2" },
     { name = "llm-gemini", specifier = ">=0.18.1" },
+    { name = "logfire", extras = ["django"], specifier = ">=3.16.0" },
     { name = "lxml", specifier = ">=5.3.2" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.5" },
