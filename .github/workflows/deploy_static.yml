@@ -1,0 +1,18 @@
+name: pk web site static deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands for static deployment
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: 
+            cd python.or.kr && bash deploy_static.sh
+ 
