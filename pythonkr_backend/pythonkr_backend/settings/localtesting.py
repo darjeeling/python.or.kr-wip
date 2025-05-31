@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import logfire
 
 from .base import *
 
@@ -26,3 +27,7 @@ MEDIA_ROOT = "/app/media"
 
 BAKERY_MULTISITE = True
 BUILD_DIR = os.path.join("/app/bakery_static", "build")
+
+# setup logfire
+logfire.configure(environment='localtest')
+logfire.instrument_django()

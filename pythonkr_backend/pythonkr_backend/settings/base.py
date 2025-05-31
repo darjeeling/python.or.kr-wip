@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import logfire
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -181,3 +182,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
     "0.0.0.0",
 ]
+
+# setup logfire
+
+logfire.configure(environment='base', service_name="web")
+logfire.instrument_django()
