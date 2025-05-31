@@ -5,7 +5,7 @@ LOG_DIR="/home/pk/logs"
 
 cd ~/
 source .env
-cd python.or.kr-wip
+cd python.or.kr
 
 # SHA 환경변수가 없으면 현재 git 커밋의 SHA 값을 가져와서 설정
 if [ -z "${SHA}" ]; then
