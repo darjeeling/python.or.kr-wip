@@ -20,6 +20,7 @@ $ docker-compose up
 $ source .venv/bin/activate
 $ cd pythonkr_backend
 $ python manage.py migrate
+$ python manage.py loaddata fixtures.json
 $ python manage.py runserver
 ```
 
