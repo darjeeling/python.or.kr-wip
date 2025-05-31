@@ -13,7 +13,7 @@ class PKBasePage(Page):
         abstract = True
 
     def get_context(self, request, *args, **kwargs):
-        "common context for PK"
+        "common context for Python Korea"
         context = super().get_context(request, *args, **kwargs)
 
         SponsorPageModel = apps.get_model("pythonkr", "PKSponsors")
@@ -81,7 +81,7 @@ class PKDocPage(PKBasePage):
 
 class PKHomePage(PKBasePage):
     template = "pythonkr/pk_home.html"
-    body = RichTextField(blank=True)
+    content = RichTextField(blank=True)
 
     subpage_types = [
         PKPage,
@@ -89,7 +89,7 @@ class PKHomePage(PKBasePage):
     ]
 
     content_panels = Page.content_panels + [
-        FieldPanel("body"),
+        FieldPanel("content"),
     ]
 
     def get_context(self, request, *args, **kwargs):

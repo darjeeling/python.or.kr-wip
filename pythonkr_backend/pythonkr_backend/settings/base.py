@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     "taggit",
     "bakery",
     "wagtailbakery",
+    "tailwind",
+    "theme",
+    "django_browser_reload",
     "pythonkr",
     "curation",
 ]
@@ -68,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'pythonkr_backend.urls'
@@ -172,7 +176,12 @@ BAKERY_VIEWS = (
     "wagtailbakery.views.AllPublishedPagesView",
 )
 
+TAILWIND_APP_NAME = 'theme'
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "0.0.0.0",
+]
 
 # setup logfire
 

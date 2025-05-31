@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             name='PKHomePage',
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.page')),
-                ('body', wagtail.fields.RichTextField(blank=True)),
+                ('content', wagtail.fields.RichTextField(blank=True)),
             ],
             options={
                 'abstract': False,
