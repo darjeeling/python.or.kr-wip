@@ -29,6 +29,7 @@ uv sync
 cd pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py migrate --no-input
+./manage.py loaddata pythonkr/fixtures/pythonkr.json
 ./manage.py collectstatic  --clear --noinput
 gunicorn --workers=2  \
     -b :2026 \
