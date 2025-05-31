@@ -23,7 +23,7 @@ fi
 mkdir -p ${LOG_DIR}
 
 # update changes before update
-# git pull
+git pull
 npm install
 source .venv/bin/activate
 uv sync
