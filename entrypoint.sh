@@ -2,6 +2,7 @@
 
 
 cd /app
+npm install
 source .venv/bin/activate
 uv sync
 cd /app/pythonkr_backend
