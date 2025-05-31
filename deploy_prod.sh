@@ -4,7 +4,15 @@ PID_FILE="/home/pk/pk.pid"
 LOG_DIR="/home/pk/logs"
 
 cd ~/
+source .env
 cd python.or.kr
+
+# SHA 환경변수가 없으면 현재 git 커밋의 SHA 값을 가져와서 설정
+if [ -z "${SHA}" ]; then
+    export SHA=$(git rev-parse HEAD)
+    echo "SHA 환경변수가 없어서 현재 git SHA로 설정: ${SHA}"
+fi
+
 # shutdown exist gunicorn
 if [ -f ${PID_FILE} ]; then
         PID=$(cat $PID_FILE)
