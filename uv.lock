@@ -897,6 +897,10 @@ wheels = [
 django = [
     { name = "opentelemetry-instrumentation-django" },
 ]
+psycopg = [
+    { name = "opentelemetry-instrumentation-psycopg" },
+    { name = "packaging" },
+]
 system-metrics = [
     { name = "opentelemetry-instrumentation-system-metrics" },
 ]
@@ -1117,6 +1121,21 @@ wheels = [
 ]
 
 [[package]]
+name = "opentelemetry-instrumentation-dbapi"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-semantic-conventions" },
+    { name = "wrapt" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7b/b7/b74e2c7c858cde8909516cbe77cb0e841167d38795c90df524d84440e1f1/opentelemetry_instrumentation_dbapi-0.54b1.tar.gz", hash = "sha256:69421c36994114040d197f7e846c01869d663084c6c2025e85b2d6cfce2f8299", size = 14145, upload-time = "2025-05-16T19:03:40.074Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/6a/98d409ae5ca60ae4e41295a42256d81bb96bd5a7a386ca0343e27494d53d/opentelemetry_instrumentation_dbapi-0.54b1-py3-none-any.whl", hash = "sha256:21bc20cd878a78bf44bab686e9679cef1eed77e53c754c0a09f0ca49f5fd0283", size = 12450, upload-time = "2025-05-16T19:02:36.041Z" },
+]
+
+[[package]]
 name = "opentelemetry-instrumentation-django"
 version = "0.54b1"
 source = { registry = "https://pypi.org/simple" }
@@ -1130,6 +1149,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/93/8d194bda118fc4c369b9a3091c39eec384137b46f33421272359883c53d9/opentelemetry_instrumentation_django-0.54b1.tar.gz", hash = "sha256:38414f989f60e9dba82928e13f6a20a26baf5cc700f1d891f27e0703ca577802", size = 24866, upload-time = "2025-05-16T19:03:41.183Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e9/75/1b0ae1b8b7d6a85d5d54e8092c84b18669bd5da6f5ceb3410047674db3c0/opentelemetry_instrumentation_django-0.54b1-py3-none-any.whl", hash = "sha256:462fbd577991021f56152df21ca1fdcd7c4abdc10dd44254a44d515b8e3d61ca", size = 19541, upload-time = "2025-05-16T19:02:37.4Z" },
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-psycopg"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-instrumentation-dbapi" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/60/e882cfac324a7f9e51579a49401675f70b7bf96f7c9a3fc924e4062fdc11/opentelemetry_instrumentation_psycopg-0.54b1.tar.gz", hash = "sha256:e76f20fbde6e7a9302cbb5d3c6868c7dfb8284ce5800b32ab30635c8b51bb2db", size = 10501, upload-time = "2025-05-16T19:03:52.755Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/0b/78a8008b779a7f23f1c72642b73f6c7e63d8d970472c1cd22006e9dd539a/opentelemetry_instrumentation_psycopg-0.54b1-py3-none-any.whl", hash = "sha256:2484ed7932be0a12c740afd24a5c9c7ee4ceb1cd3622f5240a1218c1dcf0cad3", size = 11040, upload-time = "2025-05-16T19:02:53.427Z" },
 ]
 
 [[package]]
@@ -1699,7 +1732,7 @@ dependencies = [
     { name = "httpx" },
     { name = "llm" },
     { name = "llm-gemini" },
-    { name = "logfire", extra = ["django", "system-metrics"] },
+    { name = "logfire", extra = ["django", "psycopg", "system-metrics"] },
     { name = "lxml" },
     { name = "markdown" },
     { name = "psycopg", extra = ["binary"] },
@@ -1726,7 +1759,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llm", specifier = ">=0.24.2" },
     { name = "llm-gemini", specifier = ">=0.18.1" },
-    { name = "logfire", extras = ["django", "system-metrics"], specifier = ">=3.16.0" },
+    { name = "logfire", extras = ["django", "psycopg", "system-metrics"], specifier = ">=3.16.0" },
     { name = "lxml", specifier = ">=5.3.2" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.5" },
