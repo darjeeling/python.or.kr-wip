@@ -16,8 +16,6 @@ source .venv/bin/activate
 uv sync
 cd pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
-./manage.py migrate --no-input
-./manage.py collectstatic  --clear --noinput
 ./manage.py build
 
 cd ~/bakery_static/build
