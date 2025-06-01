@@ -48,6 +48,7 @@ gunicorn --workers=2  \
     -b :2026 \
     --access-logfile ${LOG_DIR}/access.log \
     --error-logfile ${LOG_DIR}/error.log \
+    --env IS_WSGI_ENVIRONMENT=True \
     --daemon \
     --pid ${PID_FILE} \
     pythonkr_backend.wsgi
