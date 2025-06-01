@@ -1,12 +1,18 @@
 name: pk web site backend deployment
 
 on:
-  push:
-    branches:
-      - main # main 브랜치에 푸시될 때만 실행
+  workflow_run:
+    workflows:
+      - "pk web site backend testing"
+    types:
+      - completed
+
+env:
+  SHA: ${{ github.sha }}
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -16,6 +22,7 @@ jobs:
           host: ${{ secrets.HOSTNAME }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
+          envs: SHA
           script: |
             cd python.or.kr && git pull
 
@@ -25,5 +32,6 @@ jobs:
           host: ${{ secrets.HOSTNAME }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
+          envs: SHA
           script: |
             cd python.or.kr && bash deploy_prod.sh
