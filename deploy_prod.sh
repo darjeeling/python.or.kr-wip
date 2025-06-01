@@ -32,8 +32,8 @@ export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py loaddata fixtures.json
 ./manage.py collectstatic  --clear --noinput
 
-# stop celery worker
-celery -A pythonkr_backend multi stop worker1 -c2 \
+# stop celery worker with beat
+celery -A pythonkr_backend multi stop worker1 -c2 -B \
        --pidfile=/home/pk/celery-%n.pid \
        --logfile=/home/pk/logs/celery-%n%I.log
 
@@ -60,7 +60,7 @@ gunicorn --workers=2  \
     --pid ${PID_FILE} \
     pythonkr_backend.wsgi
 
-# start celery worker
-celery -A pythonkr_backend multi start worker1 -c2 \
+# start celery worker with beat
+celery -A pythonkr_backend multi start worker1 -c2 -B \
        --pidfile=/home/pk/celery-%n.pid \
        --logfile=/home/pk/logs/celery-%n%I.log

@@ -80,3 +80,6 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BROKER_URL = f"amqp://{CELERY_BROKER_USERNAME}:{CELERY_BROKER_PASSWORD}@localhost:5672/{CELERY_BROKER_VHOST}"
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_RESULT_BACKEND = 'django-db'
+
+# django-celery-beat
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
