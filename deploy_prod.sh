@@ -13,12 +13,6 @@ if [ -z "${SHA}" ]; then
     echo "SHA 환경변수가 없어서 현재 git SHA로 설정: ${SHA}"
 fi
 
-# shutdown exist gunicorn
-if [ -f ${PID_FILE} ]; then
-        PID=$(cat $PID_FILE)
-        kill -TERM $PID
-        rm ${PID_FILE}
-fi
 
 mkdir -p ${LOG_DIR}
 
@@ -32,6 +26,14 @@ export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py tailwind install && ./manage.py tailwind build
 ./manage.py loaddata fixtures.json
 ./manage.py collectstatic  --clear --noinput
+
+# shutdown exist gunicorn
+if [ -f ${PID_FILE} ]; then
+        PID=$(cat $PID_FILE)
+        kill -TERM $PID
+        rm ${PID_FILE}
+fi
+
 gunicorn --workers=2  \
     -b :2026 \
     --access-logfile ${LOG_DIR}/access.log \
