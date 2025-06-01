@@ -36,9 +36,9 @@ if [ -f ${PID_FILE} ]; then
         PID=$(cat $PID_FILE)
         kill -TERM $PID
         rm ${PID_FILE}
-        echo "Waiting for gunicorn processes to exit (max 10 seconds)..."
+        echo "Waiting for gunicorn processes to exit (max 30 seconds)..."
         timeout=0
-        while pgrep -u pk gunicorn > /dev/null && [ $timeout -lt 10 ]; do
+        while pgrep -u pk gunicorn > /dev/null && [ $timeout -lt 30 ]; do
             sleep 1
             timeout=$((timeout+1))
         done

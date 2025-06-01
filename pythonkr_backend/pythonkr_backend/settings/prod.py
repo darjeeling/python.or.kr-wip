@@ -37,8 +37,8 @@ sha_service_version = os.environ.get("SHA")
 IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT') == 'True' or \
                        os.environ.get('IS_ASGI_ENVIRONMENT') == 'True'
 
-logger.error(os.environ)
-logger.error(sys.argv)
+logger.info(os.environ)
+logger.info(sys.argv)
 
 # logfire settings
 if IS_PRODUCTION_SERVER:
