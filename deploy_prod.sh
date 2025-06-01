@@ -25,6 +25,7 @@ source .venv/bin/activate
 uv sync
 cd pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
+
 ./manage.py migrate --no-input
 ./manage.py tailwind install && ./manage.py tailwind build
 ./manage.py loaddata fixtures.json
@@ -35,6 +36,12 @@ if [ -f ${PID_FILE} ]; then
         PID=$(cat $PID_FILE)
         kill -TERM $PID
         rm ${PID_FILE}
+        echo "Waiting for gunicorn processes to exit (max 10 seconds)..."
+        timeout=0
+        while pgrep -u pk gunicorn > /dev/null && [ $timeout -lt 10 ]; do
+            sleep 1
+            timeout=$((timeout+1))
+        done
 fi
 
 gunicorn --workers=2  \
