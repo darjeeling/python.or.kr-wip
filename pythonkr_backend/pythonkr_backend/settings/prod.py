@@ -28,7 +28,43 @@ BAKERY_MULTISITE = True
 BUILD_DIR = os.path.join("/home/pk/bakery_static", "build")
 
 
-logger = logging.getLogger('root')
+LOGGING_CONFIG = None
+# Django logging to file with rotation
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'apps_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/home/pk/log/apps.log',
+            'maxBytes': 5242880,  # 5MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['apps_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+import logging.config
+
+logging.config.dictConfig(LOGGING)
+
+
+
+
+logger = logging.getLogger('')
 
 # service_version
 sha_service_version = os.environ.get("SHA")
@@ -46,3 +82,4 @@ if IS_PRODUCTION_SERVER:
     logfire.instrument_system_metrics()
     logfire.instrument_django()
     logfire.instrument_psycopg('psycopg')
+
