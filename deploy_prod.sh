@@ -41,6 +41,7 @@ if [ -f ${PID_FILE} ]; then
         while pgrep -u pk gunicorn > /dev/null && [ $timeout -lt 30 ]; do
             sleep 1
             timeout=$((timeout+1))
+            echo "Waiting $timeout seconds"
         done
 fi
 

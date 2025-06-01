@@ -28,7 +28,7 @@ BAKERY_MULTISITE = True
 BUILD_DIR = os.path.join("/home/pk/bakery_static", "build")
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('root')
 
 # service_version
 sha_service_version = os.environ.get("SHA")
