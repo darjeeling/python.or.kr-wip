@@ -4,6 +4,7 @@ import logfire
 
 from .base import *
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -30,7 +31,8 @@ BUILD_DIR = os.path.join("/home/pk/bakery_static", "build")
 sha_service_version = os.environ.get("SHA")
 
 # logfire settings
-logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
-logfire.instrument_system_metrics()
-logfire.instrument_django()
-logfire.instrument_psycopg('psycopg')
+if IS_PRODUCTION_SERVER:
+    logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
+    logfire.instrument_system_metrics()
+    logfire.instrument_django()
+    logfire.instrument_psycopg('psycopg')
