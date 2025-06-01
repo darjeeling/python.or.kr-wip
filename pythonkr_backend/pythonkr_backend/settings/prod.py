@@ -62,9 +62,8 @@ sha_service_version = os.environ.get("SHA")
 IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT', 'False') == 'True'
 
 # logfire settings
-#if IS_PRODUCTION_SERVER == 'True':
-
-logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
-logfire.instrument_django()
-logfire.instrument_system_metrics()
+if IS_PRODUCTION_SERVER:
+    logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
+    logfire.instrument_django()
+    logfire.instrument_system_metrics()
 #logfire.instrument_psycopg('psycopg')
