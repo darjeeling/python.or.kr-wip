@@ -34,9 +34,6 @@ def init_beat(*args, **kwargs):
 def add(x: int, y: int):
     return x + y
 
-add.delay(42, 50)
-
-
 app.conf.beat_schedule = {  
     "add-every-30-seconds": {
         "task": "tasks.add",
