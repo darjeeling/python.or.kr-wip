@@ -42,7 +42,7 @@ LOGGING = {
         'apps_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/home/pk/log/apps.log',
+            'filename': '/home/pk/logs/apps.log',
             'maxBytes': 5242880,  # 5MB
             'backupCount': 5,
             'formatter': 'verbose',
