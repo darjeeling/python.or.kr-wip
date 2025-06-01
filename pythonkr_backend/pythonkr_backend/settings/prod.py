@@ -69,15 +69,15 @@ logger = logging.getLogger('')
 # service_version
 sha_service_version = os.environ.get("SHA")
 
-# check WSGI/ASGI environment
-IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT') == 'True' or \
-                       os.environ.get('IS_ASGI_ENVIRONMENT') == 'True'
+# check WSGI environment
+IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT', 'False') == 'True'
 
 logger.info(os.environ)
 logger.info(sys.argv)
+logger.info(IS_PRODUCTION_SERVER)
 
 # logfire settings
-if IS_PRODUCTION_SERVER:
+if IS_PRODUCTION_SERVER == 'True':
     logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
     logfire.instrument_system_metrics()
     logfire.instrument_django()
