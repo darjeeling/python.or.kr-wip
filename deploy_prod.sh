@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# add path for uv
+export PATH=$PATH:$HOME/.local/bin
+
 PID_FILE="/home/pk/pk.pid"
 LOG_DIR="/home/pk/logs"
 
