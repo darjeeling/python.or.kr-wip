@@ -1,8 +1,13 @@
+import os
 import logfire
 from celery import Celery
 from celery.signals import worker_init, beat_init
 
-app = Celery('proj')
+
+# Set the default Django settings module for the 'celery' program.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pythonkr_backend.settings')
+
+app = Celery('pythonkr_backend')
 
 
 # Using a string here means the worker doesn't have to serialize
