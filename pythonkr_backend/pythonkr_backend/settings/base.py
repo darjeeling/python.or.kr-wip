@@ -187,23 +187,10 @@ INTERNAL_IPS = [
     "0.0.0.0",
 ]
 
-# LOGGING
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-}
-
 # import logfire
 # setup logfire
 #logfire.configure(environment='base', service_name="web")
 #logfire.instrument_django()
+
+# testing
+CELERY_ALWAYS_EAGER = True

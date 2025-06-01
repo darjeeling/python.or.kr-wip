@@ -67,3 +67,14 @@ if IS_PRODUCTION_SERVER:
     logfire.instrument_django()
     logfire.instrument_system_metrics()
 #logfire.instrument_psycopg('psycopg')
+
+# celery 
+CELERY_BROKER_PASSWORD = os.environ.get("CELERY_PASSWORD","FALSE")
+CELERY_BROKER_USERNAME = os.environ.get("CELERY_USERNAME","FALSE")
+CELERY_BROKER_VHOST = os.environ.get("CELERY_VHOST","FALSE")
+# Celery Configuration Options
+CELERY_ALWAYS_EAGER = False
+CELERY_TIMEZONE = "Asia/Seoul"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_BROKER_URL = f"amqp://{CELERY_BROKER_USERNAME}:{CELERY_BROKER_PASSWORD}@localhost:5672/{CELERY_BROKER_VHOST}"
+CELERY_TASK_TIME_LIMIT = 30 * 60
