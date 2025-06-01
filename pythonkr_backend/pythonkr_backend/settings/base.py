@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "pythonkr",
     "curation",
+    "django_celery_results",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
