@@ -985,6 +985,9 @@ wheels = [
 ]
 
 [package.optional-dependencies]
+celery = [
+    { name = "opentelemetry-instrumentation-celery" },
+]
 django = [
     { name = "opentelemetry-instrumentation-django" },
 ]
@@ -1209,6 +1212,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c3/fd/5756aea3fdc5651b572d8aef7d94d22a0a36e49c8b12fcb78cb905ba8896/opentelemetry_instrumentation-0.54b1.tar.gz", hash = "sha256:7658bf2ff914b02f246ec14779b66671508125c0e4227361e56b5ebf6cef0aec", size = 28436, upload-time = "2025-05-16T19:03:22.223Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f4/89/0790abc5d9c4fc74bd3e03cb87afe2c820b1d1a112a723c1163ef32453ee/opentelemetry_instrumentation-0.54b1-py3-none-any.whl", hash = "sha256:a4ae45f4a90c78d7006c51524f57cd5aa1231aef031eae905ee34d5423f5b198", size = 31019, upload-time = "2025-05-16T19:02:15.611Z" },
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-celery"
+version = "0.54b1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-semantic-conventions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7c/71/4ac353874e0f7ca93591e1a74b7a290dec2027733bbb31bd76da3a74f97f/opentelemetry_instrumentation_celery-0.54b1.tar.gz", hash = "sha256:f2bd019afe9286214083ae2db95ed24adf9a0aa2e943177462d64ceb8380d78e", size = 14778, upload-time = "2025-05-16T19:03:37.376Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/be/90e2b7d26915639cfcdf6e200b309c9d64027ff752c56145bc149cd67d68/opentelemetry_instrumentation_celery-0.54b1-py3-none-any.whl", hash = "sha256:892ec6bf829a0d60cf3bffd1a8bb6fd8055f1194167b4e132e33321de8e05c24", size = 13809, upload-time = "2025-05-16T19:02:33.046Z" },
 ]
 
 [[package]]
@@ -1824,7 +1841,7 @@ dependencies = [
     { name = "httpx" },
     { name = "llm" },
     { name = "llm-gemini" },
-    { name = "logfire", extra = ["django", "psycopg", "system-metrics"] },
+    { name = "logfire", extra = ["celery", "django", "psycopg", "system-metrics"] },
     { name = "lxml" },
     { name = "markdown" },
     { name = "psycopg", extra = ["binary"] },
@@ -1853,7 +1870,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llm", specifier = ">=0.24.2" },
     { name = "llm-gemini", specifier = ">=0.18.1" },
-    { name = "logfire", extras = ["django", "psycopg", "system-metrics"], specifier = ">=3.16.0" },
+    { name = "logfire", extras = ["celery", "django", "psycopg", "system-metrics"], specifier = ">=3.16.0" },
     { name = "lxml", specifier = ">=5.3.2" },
     { name = "markdown", specifier = ">=3.7" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.5" },
