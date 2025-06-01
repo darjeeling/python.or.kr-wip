@@ -27,7 +27,7 @@ cd pythonkr_backend
 export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 
 ./manage.py migrate --no-input
-./manage.py manage.py migrate django_celery_results
+./manage.py migrate django_celery_results
 ./manage.py tailwind install && ./manage.py tailwind build
 ./manage.py loaddata fixtures.json
 ./manage.py collectstatic  --clear --noinput
