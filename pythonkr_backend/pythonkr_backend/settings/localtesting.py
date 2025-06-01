@@ -29,7 +29,15 @@ MEDIA_ROOT = "/app/media"
 BAKERY_MULTISITE = True
 BUILD_DIR = os.path.join("/app/bakery_static", "build")
 
+
+# check WSGI environment
+IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT', 'False') == 'True'
+
+
 # logfire settings
 if IS_PRODUCTION_SERVER:
     logfire.configure(environment='localtest')
     logfire.instrument_django()
+
+# testing
+CELERY_ALWAYS_EAGER = True
