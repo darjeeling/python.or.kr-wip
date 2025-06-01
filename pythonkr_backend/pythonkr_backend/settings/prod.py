@@ -1,5 +1,7 @@
 import os
+import sys
 import logfire
+import logging
 
 from .base import *
 
@@ -26,12 +28,17 @@ BAKERY_MULTISITE = True
 BUILD_DIR = os.path.join("/home/pk/bakery_static", "build")
 
 
+logger = logging.getLogger(__name__)
+
 # service_version
 sha_service_version = os.environ.get("SHA")
 
 # check WSGI/ASGI environment
 IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT') == 'True' or \
                        os.environ.get('IS_ASGI_ENVIRONMENT') == 'True'
+
+logger.error(os.environ)
+logger.error(sys.argv)
 
 # logfire settings
 if IS_PRODUCTION_SERVER:
