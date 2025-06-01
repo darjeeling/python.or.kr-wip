@@ -1,4 +1,3 @@
-from pathlib import Path
 import os
 import logfire
 
@@ -29,6 +28,10 @@ BUILD_DIR = os.path.join("/home/pk/bakery_static", "build")
 
 # service_version
 sha_service_version = os.environ.get("SHA")
+
+# check WSGI/ASGI environment
+IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT') == 'True' or \
+                       os.environ.get('IS_ASGI_ENVIRONMENT') == 'True'
 
 # logfire settings
 if IS_PRODUCTION_SERVER:
