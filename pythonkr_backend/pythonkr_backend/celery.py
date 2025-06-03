@@ -29,15 +29,3 @@ def init_worker(*args, **kwargs):
 def init_beat(*args, **kwargs):
     logfire.configure(service_name="celery-beat", send_to_logfire='if-token-present')  
     logfire.instrument_celery()
-
-@app.task
-def add(x: int, y: int):
-    return x + y
-
-app.conf.beat_schedule = {  
-    "add-every-30-seconds": {
-        "task": "tasks.add",
-        "schedule": 30.0,
-        "args": (16, 16),
-    },
-}
