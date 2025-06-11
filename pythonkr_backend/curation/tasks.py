@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 from django.utils import timezone as django_timezone
 from .models import RSSFeed, RSSItem
 import logfire
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -25,10 +28,12 @@ def crawl_all_rss_feeds():
             results['processed_feeds'] += 1
             results['new_items'] += result.get('new_items', 0)
             logfire.info(f"Successfully crawled feed {feed.name}: {result.get('new_items', 0)} new items")
+            logger.info(f"Successfully crawled feed {feed.name}: {result.get('new_items', 0)} new items")
         except Exception as e:
             error_msg = f"Error crawling feed {feed.name}: {str(e)}"
             results['errors'].append(error_msg)
             logfire.error(error_msg)
+            logger.error(error_msg)
     
     return results
 
@@ -41,6 +46,7 @@ def crawl_single_rss_feed(feed_id):
         raise Exception(f"RSS Feed with id {feed_id} not found")
     
     logfire.info(f"Starting to crawl RSS feed: {feed.name} ({feed.url})")
+    logger.info(f"Starting to crawl RSS feed: {feed.name} ({feed.url})")
     
     try:
         # RSS 피드 파싱
@@ -48,6 +54,7 @@ def crawl_single_rss_feed(feed_id):
         
         if parsed_feed.bozo:
             logfire.warning(f"RSS feed {feed.name} has parsing issues: {parsed_feed.bozo_exception}")
+            logger.warning(f"RSS feed {feed.name} has parsing issues: {parsed_feed.bozo_exception}")
         
         new_items_count = 0
         
@@ -58,6 +65,7 @@ def crawl_single_rss_feed(feed_id):
             
             if not guid and not link:
                 logfire.warning(f"Skipping entry without GUID or link in feed {feed.name}")
+                logger.warning(f"Skipping entry without GUID or link in feed {feed.name}")
                 continue
             
             # 중복 체크
@@ -97,9 +105,11 @@ def crawl_single_rss_feed(feed_id):
                 )
                 new_items_count += 1
                 logfire.debug(f"Created new RSS item: {rss_item.title}")
+                logger.debug(f"Created new RSS item: {rss_item.title}")
                 
             except Exception as e:
                 logfire.error(f"Error creating RSS item for {link}: {str(e)}")
+                logger.error(f"Error creating RSS item for {link}: {str(e)}")
                 continue
         
         # 마지막 크롤링 시간 업데이트
@@ -113,6 +123,7 @@ def crawl_single_rss_feed(feed_id):
         }
         
         logfire.info(f"Completed crawling {feed.name}: {new_items_count} new items out of {len(parsed_feed.entries)} total entries")
+        logger.info(f"Completed crawling {feed.name}: {new_items_count} new items out of {len(parsed_feed.entries)} total entries")
         return result
         
     except requests.RequestException as e:
