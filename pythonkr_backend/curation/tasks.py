@@ -1,16 +1,28 @@
+import logfire
+from celery import Celery
+from celery.signals import worker_init, beat_init
+
 from celery import shared_task
 import feedparser
 import requests
 from datetime import datetime, timezone
 from django.utils import timezone as django_timezone
 from .models import RSSFeed, RSSItem
-import logfire
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-@shared_task
+@worker_init.connect()
+def init_worker(*args, **kwargs):
+    logfire.configure(service_name="worker")
+    logfire.instrument_celery()
+
+@beat_init.connect()  
+def init_beat(*args, **kwargs):
+    logfire.configure(service_name="beat")  
+    logfire.instrument_celery()
+
 def crawl_all_rss_feeds():
     """모든 활성화된 RSS 피드를 크롤링합니다."""
     active_feeds = RSSFeed.objects.filter(is_active=True)
@@ -135,9 +147,6 @@ def crawl_single_rss_feed(feed_id):
 @shared_task  
 def crawl_rss():
     """10분마다 실행되는 RSS 크롤링 태스크"""
+    logfire.info("start to crawl rss")
+    logger.info("start to crawl rss")
     return crawl_all_rss_feeds()
-
-
-@shared_task
-def crawl_url():
-    pass
