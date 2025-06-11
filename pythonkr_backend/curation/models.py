@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from .utils import get_summary_from_url, translate_to_korean, categorize_summary 
 import readtime
 import os
+from datetime import timedelta
 
 
 class Category(models.Model):
@@ -176,3 +177,198 @@ class Article(models.Model):
         except Exception as e:
             print(f"Error categorizing article {self.id}: {e}")
             return f"Error during categorization: {str(e)[:150]}"
+
+
+# LicenseType Enum for license choices
+class LicenseType(models.TextChoices):
+    MIT = 'MIT', 'MIT License'
+    BSD2 = 'BSD-2-Clause', 'BSD 2-Clause License'
+    APACHE2 = 'Apache-2.0', 'Apache License 2.0'
+    GPLV3 = 'GPL-3.0', 'GNU GPL v3'
+    LGPLV3 = 'LGPL-3.0', 'GNU LGPL v3'
+    MPL2 = 'MPL-2.0', 'Mozilla Public License 2.0'
+    CC0 = 'CC0-1.0', 'CC0 1.0 Universal'
+    CC_BY = 'CC-BY-4.0', 'Creative Commons Attribution 4.0'
+    CC_BY_SA = 'CC-BY-SA-4.0', 'Creative Commons Attribution-ShareAlike 4.0'
+    PROPRIETARY = 'PROPRIETARY', 'Proprietary License'
+
+
+class CrawlingSources(models.Model):
+    name = models.CharField(
+        max_length=256,
+        verbose_name="Crawling Source Name"
+    )
+    rss_feed_url = models.URLField(
+        null=True,
+        blank=True,
+        verbose_name="RSS Feed URL"
+    )
+    fetch_interval = models.DurationField(
+        default=timedelta(minutes=60),
+        help_text="크롤링 주기 (시간 단위)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.rss_feed_url or 'No RSS URL'})"
+
+
+class CrawlingSite(models.Model):
+    source = models.ForeignKey(
+        CrawlingSources,
+        on_delete=models.CASCADE,
+        related_name="sites",
+        help_text="이 사이트가 속한 크롤링 소스"
+    )
+    name = models.CharField(
+        max_length=256,
+        verbose_name="Site Name"
+    )
+    url = models.URLField(
+        unique=True,
+        db_index=True,
+        help_text="사이트의 기본 URL"
+    )
+    license_type = models.CharField(
+        max_length=20,
+        choices=LicenseType.choices,
+        default=LicenseType.MIT,
+        help_text="Select the license type for the crawling source."
+    )
+    copyright_notice_required = models.BooleanField(
+        default=False,
+        help_text="저작권 고지가 필요한지 여부"
+    )
+    copyright_link = models.URLField(
+        null=True,
+        blank=True,
+        help_text="저작권 고지 링크 (필요한 경우)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        super().clean()
+        # 예: 특정 라이선스(GPL 계열)는 copyright_link가 반드시 필요
+        if self.license_type in [LicenseType.GPLV3, LicenseType.LGPLV3] and not self.copyright_link:
+            from django.core.exceptions import ValidationError
+            raise ValidationError({
+                'copyright_link': "GPL 계열 라이선스의 경우 반드시 저작권 고지 링크를 입력해야 합니다."
+            })
+
+    def save(self, *args, **kwargs):
+        # Set copyright_notice_required based on license_type
+        if self.license_type in [LicenseType.CC0, LicenseType.PROPRIETARY]:
+            self.copyright_notice_required = False
+        else:
+            self.copyright_notice_required = True
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} ({self.url})"
+
+
+class RSSFeed(models.Model):
+    name = models.CharField(max_length=200, help_text="RSS 피드 이름")
+    url = models.URLField(unique=True, help_text="RSS 피드 URL")
+    is_active = models.BooleanField(default=True, help_text="활성화 여부")
+    last_fetched = models.DateTimeField(null=True, blank=True, help_text="마지막 크롤링 시간")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "RSS Feed"
+        verbose_name_plural = "RSS Feeds"
+
+
+class RSSItem(models.Model):
+    feed = models.ForeignKey(
+        RSSFeed,
+        on_delete=models.CASCADE,
+        related_name="items",
+        help_text="이 아이템이 속한 RSS 피드"
+    )
+    title = models.CharField(max_length=500, help_text="제목")
+    link = models.URLField(unique=True, help_text="아이템 URL")
+    description = models.TextField(blank=True, help_text="설명")
+    author = models.CharField(max_length=200, blank=True, help_text="작성자")
+    category = models.CharField(max_length=200, blank=True, help_text="카테고리")
+    guid = models.CharField(max_length=500, blank=True, unique=True, help_text="GUID")
+    pub_date = models.DateTimeField(null=True, blank=True, help_text="발행일")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "RSS Item"
+        verbose_name_plural = "RSS Items"
+        ordering = ['-pub_date', '-created_at']
+
+
+class CrawlURL(models.Model):
+    site = models.ForeignKey(
+        CrawlingSite,
+        on_delete=models.CASCADE,
+        related_name="crawl_urls",
+        help_text="이 URL이 속한 사이트"
+    )
+    url = models.URLField(
+        unique=True,
+        verbose_name="Crawling Article URL"
+    )
+    STATUS_CHOICES = [
+        ('pending', '대기 중'),
+        ('success', '성공'),
+        ('failed', '실패'),
+    ]
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text="크롤링 상태"
+    )
+    crawl_creation_date = models.DateTimeField(
+        auto_now_add=True,
+        help_text="크롤링이 생성된 시각(자동 기록)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.url} [{self.get_status_display()}]"
+
+
+class CrawledContent(models.Model):
+    crawl_url = models.ForeignKey(
+        CrawlURL,
+        on_delete=models.CASCADE,
+        related_name="contents",
+        help_text="원본 URL 객체"
+    )
+    title = models.CharField(
+        max_length=512,
+        blank=True,
+        help_text="기사 제목"
+    )
+    content = models.TextField(
+        help_text="크롤링 본문"
+    )
+    published_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="원문 게시 시각"
+    )
+    is_visible = models.BooleanField(
+        default=False,
+        help_text="라이선스/저작권 검증 결과 콘텐츠 노출 여부"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title or self.crawl_url.url

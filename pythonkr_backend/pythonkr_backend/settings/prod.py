@@ -83,3 +83,14 @@ CELERY_RESULT_BACKEND = 'django-db'
 
 # django-celery-beat
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Celery Beat Schedule
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'crawl-rss-feeds': {
+        'task': 'curation.tasks.crawl_rss',
+        'schedule': crontab(minute='*/10'),  # Every 10 minutes
+        'options': {'queue': 'default'}
+    },
+}

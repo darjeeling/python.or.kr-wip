@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import Article, Category # Or combine imports
+from .models import Article, Category, RSSFeed, RSSItem # Or combine imports
 
 
 @admin.register(Category)
@@ -86,3 +86,80 @@ class ArticleAdmin(admin.ModelAdmin):
             preview = obj.summary_ko[:50]
             return f"{preview}..." if len(obj.summary_ko) > 50 else preview
          return "No Korean summary"
+
+
+@admin.register(RSSFeed)
+class RSSFeedAdmin(admin.ModelAdmin):
+    list_display = ('name', 'url', 'is_active', 'last_fetched', 'item_count', 'created_at')
+    list_filter = ('is_active', 'created_at', 'last_fetched')
+    search_fields = ('name', 'url')
+    readonly_fields = ('last_fetched', 'created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Feed Information', {
+            'fields': ('name', 'url', 'is_active')
+        }),
+        ('Status', {
+            'fields': ('last_fetched', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    @admin.display(description='Items Count')
+    def item_count(self, obj):
+        return obj.items.count()
+    
+    actions = ['crawl_selected_feeds']
+    
+    @admin.action(description="Crawl selected RSS feeds")
+    def crawl_selected_feeds(self, request, queryset):
+        from .tasks import crawl_single_rss_feed
+        
+        success_count = 0
+        total_new_items = 0
+        errors = []
+        
+        for feed in queryset:
+            try:
+                result = crawl_single_rss_feed(feed.id)
+                success_count += 1
+                total_new_items += result.get('new_items', 0)
+            except Exception as e:
+                errors.append(f"{feed.name}: {str(e)}")
+        
+        if success_count > 0:
+            self.message_user(
+                request,
+                f"Successfully crawled {success_count} feed(s). Found {total_new_items} new items.",
+                messages.SUCCESS
+            )
+        
+        if errors:
+            error_message = "Errors encountered:\n" + "\n".join(errors)
+            self.message_user(request, error_message, messages.WARNING)
+
+
+@admin.register(RSSItem)
+class RSSItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'feed', 'author', 'pub_date', 'created_at')
+    list_filter = ('feed', 'pub_date', 'created_at', 'author')
+    search_fields = ('title', 'description', 'author', 'link')
+    readonly_fields = ('created_at',)
+    date_hierarchy = 'pub_date'
+    
+    fieldsets = (
+        ('Item Information', {
+            'fields': ('feed', 'title', 'link', 'author', 'category')
+        }),
+        ('Content', {
+            'fields': ('description',),
+            'classes': ('collapse',)
+        }),
+        ('Metadata', {
+            'fields': ('guid', 'pub_date', 'created_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('feed')
