@@ -84,7 +84,6 @@ CELERY_BROKER_URL = f"amqp://{CELERY_BROKER_USERNAME}:{CELERY_BROKER_PASSWORD}@l
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_RESULT_BACKEND = 'django-db'
 
-print(f"CELERY_BROKER_URL: {CELERY_BROKER_URL}")
 
 # django-celery-beat
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
@@ -96,6 +95,6 @@ CELERY_BEAT_SCHEDULE = {
     'crawl-rss-feeds': {
         'task': 'curation.tasks.crawl_rss',
         'schedule': crontab(minute='*/10'),  # Every 10 minutes
-        'options': {'queue': 'default'}
+        'options': {'queue': 'celery'}
     },
 }
