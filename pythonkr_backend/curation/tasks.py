@@ -5,7 +5,7 @@ from celery.signals import worker_init, beat_init
 from celery import shared_task
 import feedparser
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from django.utils import timezone as django_timezone
 from django.core.files.base import ContentFile
 from .models import RSSFeed, RSSItem
@@ -159,9 +159,11 @@ def crawl_rss_item_content():
     logfire.info("Starting RSS item content crawling")
     logger.info("Starting RSS item content crawling")
     
-    # 크롤링되지 않은 최신 1개 아이템 가져오기
+    # 2주 이내의 크롤링되지 않은 최신 1개 아이템 가져오기
+    two_weeks_ago = django_timezone.now() - timedelta(days=14)
     pending_item = RSSItem.objects.filter(
-        crawling_status='pending'
+        crawling_status='pending',
+        pub_date__gte=two_weeks_ago
     ).order_by('-pub_date', '-created_at').first()
     
     if not pending_item:
