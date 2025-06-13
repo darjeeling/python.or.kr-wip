@@ -1,6 +1,4 @@
 import logfire
-from celery import Celery
-from celery.signals import worker_init, beat_init
 
 from celery import shared_task
 import feedparser
@@ -12,17 +10,6 @@ from .models import RSSFeed, RSSItem
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-@worker_init.connect()
-def init_worker(*args, **kwargs):
-    logfire.configure(service_name="worker")
-    logfire.instrument_celery()
-
-@beat_init.connect()  
-def init_beat(*args, **kwargs):
-    logfire.configure(service_name="beat")  
-    logfire.instrument_celery()
 
 def crawl_all_rss_feeds():
     """모든 활성화된 RSS 피드를 크롤링합니다."""

@@ -406,3 +406,61 @@ class CrawledContent(models.Model):
 
     def __str__(self):
         return self.title or self.crawl_url.url
+
+
+class LLMService(models.Model):
+    LLM_PROVIDER_CHOICES = [
+        ('openai', 'OpenAI'),
+        ('claude', 'Claude'),
+        ('gemini', 'Gemini'),
+    ]
+    
+    provider = models.CharField(
+        max_length=20,
+        choices=LLM_PROVIDER_CHOICES,
+        unique=True,
+        help_text="LLM 서비스 제공자"
+    )
+    priority = models.PositiveIntegerField(
+        help_text="우선순위 (1이 가장 높음)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="서비스 활성화 여부"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.get_provider_display()} (Priority: {self.priority})"
+
+    class Meta:
+        verbose_name = "LLM Service"
+        verbose_name_plural = "LLM Services"
+        ordering = ['priority']
+
+
+class LLMUsage(models.Model):
+    date = models.DateField(
+        auto_now_add=True,
+        help_text="사용 날짜"
+    )
+    model_name = models.CharField(
+        max_length=100,
+        help_text="사용된 모델명"
+    )
+    input_tokens = models.PositiveIntegerField(
+        help_text="입력 토큰 수"
+    )
+    output_tokens = models.PositiveIntegerField(
+        help_text="출력 토큰 수"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.model_name} - {self.date} (In: {self.input_tokens}, Out: {self.output_tokens})"
+
+    class Meta:
+        verbose_name = "LLM Usage"
+        verbose_name_plural = "LLM Usage"
+        ordering = ['-date', '-created_at']

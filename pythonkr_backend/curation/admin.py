@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import Article, Category, RSSFeed, RSSItem # Or combine imports
+from .models import Article, Category, RSSFeed, RSSItem, LLMService, LLMUsage
 
 
 @admin.register(Category)
@@ -166,3 +166,50 @@ class RSSItemAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('feed')
+
+
+@admin.register(LLMService)
+class LLMServiceAdmin(admin.ModelAdmin):
+    list_display = ('provider', 'priority', 'is_active', 'updated_at', 'created_at')
+    list_filter = ('is_active', 'provider', 'created_at')
+    search_fields = ('provider',)
+    readonly_fields = ('created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Service Configuration', {
+            'fields': ('provider', 'priority', 'is_active')
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(LLMUsage)
+class LLMUsageAdmin(admin.ModelAdmin):
+    list_display = ('model_name', 'date', 'input_tokens', 'output_tokens', 'total_tokens', 'created_at')
+    list_filter = ('date', 'model_name', 'created_at')
+    search_fields = ('model_name',)
+    readonly_fields = ('date', 'created_at')
+    date_hierarchy = 'date'
+    
+    fieldsets = (
+        ('Usage Information', {
+            'fields': ('model_name', 'date', 'input_tokens', 'output_tokens')
+        }),
+        ('Metadata', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    @admin.display(description='Total Tokens')
+    def total_tokens(self, obj):
+        return obj.input_tokens + obj.output_tokens
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False
