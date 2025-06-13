@@ -6,6 +6,13 @@ import os
 from datetime import timedelta
 
 
+def rss_item_upload_path(instance, filename):
+    """Generate upload path for RSS item crawled content"""
+    from datetime import datetime
+    now = datetime.now()
+    return f"rssitem-crawling/{now.year}/{now.month:02d}/{instance.id}-crawl.md"
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, help_text="The name of the category (e.g., 'Web Development', 'LLM').")
     slug = models.SlugField(max_length=100, unique=True, help_text="A URL-friendly slug for the category.", blank=True) # Optional but good practice
@@ -286,6 +293,12 @@ class RSSFeed(models.Model):
 
 
 class RSSItem(models.Model):
+    CRAWLING_STATUS_CHOICES = [
+        ('pending', '크롤링 대기'),
+        ('completed', '크롤링 완료'),
+        ('failed', '크롤링 실패'),
+    ]
+    
     feed = models.ForeignKey(
         RSSFeed,
         on_delete=models.CASCADE,
@@ -299,6 +312,27 @@ class RSSItem(models.Model):
     category = models.CharField(max_length=200, blank=True, help_text="카테고리")
     guid = models.CharField(max_length=500, blank=True, unique=True, help_text="GUID")
     pub_date = models.DateTimeField(null=True, blank=True, help_text="발행일")
+    crawling_status = models.CharField(
+        max_length=20,
+        choices=CRAWLING_STATUS_CHOICES,
+        default='pending',
+        help_text="크롤링 상태"
+    )
+    crawled_content = models.FileField(
+        upload_to=rss_item_upload_path,
+        blank=True,
+        null=True,
+        help_text="크롤링된 마크다운 콘텐츠 파일"
+    )
+    crawled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="크롤링 완료 시간"
+    )
+    error_message = models.TextField(
+        blank=True,
+        help_text="크롤링 실패 시 에러 메시지"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

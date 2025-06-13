@@ -97,4 +97,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*/10'),  # Every 10 minutes
         'options': {'queue': 'celery'}
     },
+    'crawl-rss-item-content': {
+        'task': 'curation.tasks.crawl_rss_item_content',
+        'schedule': crontab(minute='*/10'),  # Every 10 minutes
+        'options': {'queue': 'celery'}
+    },
 }
