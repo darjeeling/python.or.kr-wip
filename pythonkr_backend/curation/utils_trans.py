@@ -43,7 +43,7 @@ def translate_rssitem(rss_item_id: int):
     if not rss_item.crawled_content:
         raise ValueError("RSS item has no crawled content")
     
-    with rss_item.crawled_content.open('r', encoding='utf-8') as f:
+    with rss_item.crawled_content.open('r') as f:
         content = f.read()
     
     # Create AI agent for translation
