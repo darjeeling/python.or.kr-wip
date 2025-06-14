@@ -69,11 +69,12 @@ def translate_rssitem(rss_item_id: int):
         source_url=rss_item.link
     )
     
+    # save to get instance id
+    translated_content.save()
     # Save the translated content to a file
     content_file = ContentFile(result.output.content, name=f"{rss_item.id}-translated.md")
     translated_content.content.save(f"{rss_item.id}-translated.md", content_file)
-    
-    # Save the instance
+    # save again to update the content field
     translated_content.save()
     
     # Create LLM usage record
