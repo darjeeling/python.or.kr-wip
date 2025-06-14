@@ -1,0 +1,88 @@
+from pydantic import BaseModel, Field
+from pydantic_ai import Agent
+from datetime import date, datetime, time, timedelta
+
+from django.core.files.base import ContentFile
+
+class TranslatedResult(BaseModel):
+    title: str = Field(description="The title of the translated article")
+    slug: str = Field(
+        description="The URL slug. Do not include the language code. Make it similar to the original URL."
+    )
+    description: str = Field(
+        description="The description of the translated article. Don't mention that it's translated."
+    )
+    author: str = Field(description="The author of the translated article")
+    tags: list[str] = Field(
+        description="List of Python-related tags inferred from the document."
+    )
+    written_date: date = Field(description="The written date of the translated article")
+    content: str = Field(description="The content of the translated article")
+
+def translate_rssitem(rss_item_id: int):
+    from .models import LLMService, LLMUsage, TranslatedContent, RSSItem
+    """
+    Translate an RSS item to Korean using AI and save as TranslatedContent.
+    
+    Args:
+        rss_item: RSSItem instance to translate
+        
+    Returns:
+        TranslatedContent: The created translated content instance
+    """
+    rss_item = RSSItem.objects.get(id=rss_item_id)
+    
+    # Get LLM provider and model
+    provider, model = LLMService.get_llm_provider_model()
+    if not provider or not model:
+        raise ValueError("No available LLM service found")
+    
+    model_name = f"{provider}:{model}"
+    
+    # Read the crawled content from the file
+    if not rss_item.crawled_content:
+        raise ValueError("RSS item has no crawled content")
+    
+    with rss_item.crawled_content.open('r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Create AI agent for translation
+    agent = Agent(
+        model_name, 
+        output_type=TranslatedResult, 
+        system_prompt="Translate the following markdown article in full to korean"
+    )
+    
+    # Run translation
+    result = agent.run_sync(content)
+    
+    # Create TranslatedContent instance
+    translated_content = TranslatedContent(
+        title=result.output.title,
+        slug=result.output.slug,
+        description=result.output.description,
+        author=result.output.author,
+        tags=result.output.tags,
+        written_date=result.output.written_date,
+        model_name=model_name,
+        source_rss_item=rss_item,
+        source_url=rss_item.link
+    )
+    
+    # Save the translated content to a file
+    content_file = ContentFile(result.output.content, name=f"{rss_item.id}-translated.md")
+    translated_content.content.save(f"{rss_item.id}-translated.md", content_file)
+    
+    # Save the instance
+    translated_content.save()
+    
+    # Create LLM usage record
+    usage = result.usage()
+    LLMUsage.objects.create(
+        model_name=model_name,
+        input_tokens=usage.request_tokens,
+        output_tokens=usage.response_tokens,
+        total_tokens=usage.total_tokens
+    )
+    
+    return translated_content

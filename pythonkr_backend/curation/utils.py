@@ -6,6 +6,9 @@ from datetime import date, datetime, time, timedelta
 
 import os
 
+from django.core.files.base import ContentFile
+
+
 class Result(BaseModel):
     categories: list[str]
 
@@ -76,19 +79,3 @@ def categorize_summary(summary: str, categories: list[str]):
     )
 
     return response.text()
-
-
-class TranslatedResult(BaseModel):
-    title: str = Field(description="The title of the translated article")
-    slug: str = Field(
-        description="The URL slug. Do not include the language code. Make it similar to the original URL."
-    )
-    description: str = Field(
-        description="The description of the translated article. Don't mention that it's translated."
-    )
-    author: str = Field(description="The author of the translated article")
-    tags: list[str] = Field(
-        description="List of Python-related tags inferred from the document."
-    )
-    written_date: date = Field(description="The written date of the translated article")
-    content: str = Field(description="The content of the translated article")
