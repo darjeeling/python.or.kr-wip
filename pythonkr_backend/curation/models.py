@@ -565,7 +565,7 @@ class LLMService(models.Model):
                 
                 if model_key in combined_models:
                     # Check combined quota
-                    if combined_tokens < 250000:
+                    if combined_tokens < ( 250000 * 0.9 ):
                         available_models.append(model_name)
                 else:
                     # Check individual quota (gpt-4.1-mini)
