@@ -61,7 +61,7 @@ gunicorn --workers=2  \
     pythonkr_backend.wsgi
 
 # start celery worker with beat
-celery -A pythonkr_backend multi start worker1 -c2 -B \
+celery -A pythonkr_backend multi start worker -c2 -B \
        --loglevel=info \
        --pidfile=/home/pk/celery-%n.pid \
        --logfile=/home/pk/logs/celery-%n-%i.log
