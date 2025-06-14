@@ -546,8 +546,8 @@ class LLMService(models.Model):
             # Check OpenAI models with UTC midnight reset
             today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
             
-            # Handle combined quota models (gpt-4.5 and gpt-4.1)
-            combined_models = ['openai:gpt-4.5-preview-2025-02-27', 'openai:gpt-4.1-2025-04-14']
+            # Handle combined quota models (gpt-4.1 and gpt-4.5)
+            combined_models = ['openai:gpt-4.1-2025-04-14', 'openai:gpt-4.5-preview-2025-02-27']
             combined_usage = LLMUsage.objects.filter(
                 model_name__in=combined_models,
                 date__gte=today_start
