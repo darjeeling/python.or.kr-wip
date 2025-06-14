@@ -473,16 +473,17 @@ class LLMService(models.Model):
                 'daily_tokens': None,  # Not specified
                 'provider': 'gemini'
             },
-            'openai:gpt-4.5-preview-2025-02-27': {
-                'daily_tokens': 250000,  # Combined with gpt-4.1-2025-04-14
-                'provider': 'openai',
-                'combined_with': ['openai:gpt-4.1-2025-04-14']
-            },
             'openai:gpt-4.1-2025-04-14': {
                 'daily_tokens': 250000,  # Combined with gpt-4.5-preview-2025-02-27
                 'provider': 'openai',
                 'combined_with': ['openai:gpt-4.5-preview-2025-02-27']
             },
+            'openai:gpt-4.5-preview-2025-02-27': {
+                'daily_tokens': 250000,  # Combined with gpt-4.1-2025-04-14
+                'provider': 'openai',
+                'combined_with': ['openai:gpt-4.1-2025-04-14']
+            },
+
             'openai:gpt-4.1-mini-2025-04-14': {
                 'daily_tokens': 2500000,
                 'provider': 'openai'
