@@ -3,7 +3,9 @@ from django.utils.text import slugify
 from .utils import get_summary_from_url, translate_to_korean, categorize_summary 
 import readtime
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime
+from django.utils import timezone
+import pytz
 
 
 def rss_item_upload_path(instance, filename):
@@ -434,6 +436,140 @@ class LLMService(models.Model):
     def __str__(self):
         return f"{self.get_provider_display()} (Priority: {self.priority})"
 
+    @classmethod
+    def get_llm_provider_model(cls):
+        """
+        Calculate today's usage and return available provider and model based on priority.
+        Returns tuple: (provider, model_name) or (None, None) if no models available.
+        """
+        # Model configurations with daily limits
+        MODEL_CONFIGS = {
+            'google-gla:gemini-2.5-pro-preview-06-05': {
+                'daily_requests': 25,
+                'rpm': 5,
+                'tpm': 250000,
+                'daily_tokens': 1000000,
+                'provider': 'gemini'
+            },
+            'google-gla:gemini-2.5-flash-preview-05-20': {
+                'daily_requests': 500,
+                'rpm': 10,
+                'tpm': 250000,
+                'daily_tokens': None,  # Not specified
+                'provider': 'gemini'
+            },
+            'openai:gpt-4.5-preview-2025-02-27': {
+                'daily_tokens': 250000,  # Combined with gpt-4.1-2025-04-14
+                'provider': 'openai',
+                'combined_with': ['openai:gpt-4.1-2025-04-14']
+            },
+            'openai:gpt-4.1-2025-04-14': {
+                'daily_tokens': 250000,  # Combined with gpt-4.5-preview-2025-02-27
+                'provider': 'openai',
+                'combined_with': ['openai:gpt-4.5-preview-2025-02-27']
+            },
+            'openai:gpt-4.1-mini-2025-04-14': {
+                'daily_tokens': 2500000,
+                'provider': 'openai'
+            },
+            'anthropic:claude-3-5-haiku-latest': {
+                'provider': 'claude'
+            },
+            'anthropic:claude-sonnet-4-0': {
+                'provider': 'claude'
+            }
+        }
+
+        # Get active services ordered by priority
+        active_services = cls.objects.filter(is_active=True).order_by('priority')
+        
+        for service in active_services:
+            available_models = cls._get_available_models_for_provider(service.provider, MODEL_CONFIGS)
+            if available_models:
+                return service.provider, available_models[0]
+        
+        return None, None
+
+    @classmethod
+    def _get_available_models_for_provider(cls, provider, model_configs):
+        """Get available models for a specific provider based on usage limits."""
+        available_models = []
+        
+        if provider == 'gemini':
+            # Check Google Gemini models with Pacific Time reset
+            pacific_tz = pytz.timezone('US/Pacific')
+            now_pacific = timezone.now().astimezone(pacific_tz)
+            start_of_day_pacific = now_pacific.replace(hour=0, minute=0, second=0, microsecond=0)
+            start_of_day_utc = start_of_day_pacific.astimezone(pytz.UTC)
+            
+            for model_key, config in model_configs.items():
+                if not model_key.startswith('google-gla:'):
+                    continue
+                    
+                model_name = model_key.split(':', 1)[1]
+                today_usage = LLMUsage.objects.filter(
+                    model_name=model_key,
+                    date__gte=start_of_day_utc
+                ).aggregate(
+                    total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens')),
+                    total_requests=models.Count('id')
+                )
+                
+                total_tokens = today_usage['total_tokens'] or 0
+                total_requests = today_usage['total_requests'] or 0
+                
+                # Check daily limits
+                if config.get('daily_requests') and total_requests >= config['daily_requests']:
+                    continue
+                if config.get('daily_tokens') and total_tokens >= config['daily_tokens']:
+                    continue
+                    
+                available_models.append(model_name)
+        
+        elif provider == 'openai':
+            # Check OpenAI models with UTC midnight reset
+            today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            # Handle combined quota models (gpt-4.5 and gpt-4.1)
+            combined_models = ['openai:gpt-4.5-preview-2025-02-27', 'openai:gpt-4.1-2025-04-14']
+            combined_usage = LLMUsage.objects.filter(
+                model_name__in=combined_models,
+                date__gte=today_start
+            ).aggregate(
+                total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens'))
+            )
+            combined_tokens = combined_usage['total_tokens'] or 0
+            
+            # Check individual models
+            for model_key, config in model_configs.items():
+                if not model_key.startswith('openai:'):
+                    continue
+                    
+                model_name = model_key.split(':', 1)[1]
+                
+                if model_key in combined_models:
+                    # Check combined quota
+                    if combined_tokens < 250000:
+                        available_models.append(model_name)
+                else:
+                    # Check individual quota (gpt-4.1-mini)
+                    today_usage = LLMUsage.objects.filter(
+                        model_name=model_key,
+                        date__gte=today_start
+                    ).aggregate(
+                        total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens'))
+                    )
+                    total_tokens = today_usage['total_tokens'] or 0
+                    
+                    if total_tokens < config['daily_tokens']:
+                        available_models.append(model_name)
+        
+        elif provider == 'claude':
+            # Claude as fallback - assume always available
+            available_models = ['claude-sonnet-4-0']
+        
+        return available_models
+
     class Meta:
         verbose_name = "LLM Service"
         verbose_name_plural = "LLM Services"
@@ -441,7 +577,7 @@ class LLMService(models.Model):
 
 
 class LLMUsage(models.Model):
-    date = models.DateField(
+    date = models.DateTimeField(
         auto_now_add=True,
         help_text="사용 날짜"
     )
