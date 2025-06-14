@@ -7,9 +7,6 @@ from datetime import datetime, timezone, timedelta
 from django.utils import timezone as django_timezone
 from django.core.files.base import ContentFile
 from .models import RSSFeed, RSSItem
-import logging
-
-logger = logging.getLogger(__name__)
 
 def crawl_all_rss_feeds():
     """모든 활성화된 RSS 피드를 크롤링합니다."""
@@ -28,12 +25,10 @@ def crawl_all_rss_feeds():
             results['processed_feeds'] += 1
             results['new_items'] += result.get('new_items', 0)
             logfire.info(f"Successfully crawled feed {feed.name}: {result.get('new_items', 0)} new items")
-            logger.info(f"Successfully crawled feed {feed.name}: {result.get('new_items', 0)} new items")
         except Exception as e:
             error_msg = f"Error crawling feed {feed.name}: {str(e)}"
             results['errors'].append(error_msg)
             logfire.error(error_msg)
-            logger.error(error_msg)
     
     return results
 
@@ -46,7 +41,6 @@ def crawl_single_rss_feed(feed_id):
         raise Exception(f"RSS Feed with id {feed_id} not found")
     
     logfire.info(f"Starting to crawl RSS feed: {feed.name} ({feed.url})")
-    logger.info(f"Starting to crawl RSS feed: {feed.name} ({feed.url})")
     
     try:
         # RSS 피드 파싱
@@ -54,7 +48,6 @@ def crawl_single_rss_feed(feed_id):
         
         if parsed_feed.bozo:
             logfire.warning(f"RSS feed {feed.name} has parsing issues: {parsed_feed.bozo_exception}")
-            logger.warning(f"RSS feed {feed.name} has parsing issues: {parsed_feed.bozo_exception}")
         
         new_items_count = 0
         
@@ -65,7 +58,6 @@ def crawl_single_rss_feed(feed_id):
             
             if not guid and not link:
                 logfire.warning(f"Skipping entry without GUID or link in feed {feed.name}")
-                logger.warning(f"Skipping entry without GUID or link in feed {feed.name}")
                 continue
             
             # 중복 체크
@@ -105,11 +97,9 @@ def crawl_single_rss_feed(feed_id):
                 )
                 new_items_count += 1
                 logfire.debug(f"Created new RSS item: {rss_item.title}")
-                logger.debug(f"Created new RSS item: {rss_item.title}")
                 
             except Exception as e:
                 logfire.error(f"Error creating RSS item for {link}: {str(e)}")
-                logger.error(f"Error creating RSS item for {link}: {str(e)}")
                 continue
         
         # 마지막 크롤링 시간 업데이트
@@ -123,7 +113,6 @@ def crawl_single_rss_feed(feed_id):
         }
         
         logfire.info(f"Completed crawling {feed.name}: {new_items_count} new items out of {len(parsed_feed.entries)} total entries")
-        logger.info(f"Completed crawling {feed.name}: {new_items_count} new items out of {len(parsed_feed.entries)} total entries")
         return result
         
     except requests.RequestException as e:
@@ -136,7 +125,6 @@ def crawl_single_rss_feed(feed_id):
 def crawl_rss():
     """10분마다 실행되는 RSS 크롤링 태스크"""
     logfire.info("start to crawl rss")
-    logger.info("start to crawl rss")
     return crawl_all_rss_feeds()
 
 
@@ -144,7 +132,6 @@ def crawl_rss():
 def crawl_rss_item_content():
     """RSS 아이템의 본문을 크롤링하는 태스크 (10분마다 실행)"""
     logfire.info("Starting RSS item content crawling")
-    logger.info("Starting RSS item content crawling")
     
     # 2주 이내의 크롤링되지 않은 최신 1개 아이템 가져오기
     two_weeks_ago = django_timezone.now() - timedelta(days=14)
@@ -155,11 +142,9 @@ def crawl_rss_item_content():
     
     if not pending_item:
         logfire.info("No pending RSS items to crawl")
-        logger.info("No pending RSS items to crawl")
         return {"status": "no_items", "message": "No pending items to crawl"}
     
     logfire.info(f"Crawling RSS item: {pending_item.title} ({pending_item.link})")
-    logger.info(f"Crawling RSS item: {pending_item.title} ({pending_item.link})")
     
     # 크롤링 상태를 진행 중으로 변경 (동시 처리 방지)
     pending_item.crawling_status = 'completed'  # 임시로 설정하여 중복 처리 방지
@@ -186,7 +171,6 @@ def crawl_rss_item_content():
         pending_item.save()
         
         logfire.info(f"Successfully crawled RSS item: {pending_item.title}")
-        logger.info(f"Successfully crawled RSS item: {pending_item.title}")
         
         return {
             "status": "success",
@@ -202,7 +186,6 @@ def crawl_rss_item_content():
         pending_item.save(update_fields=['crawling_status', 'error_message'])
         
         logfire.error(error_msg)
-        logger.error(error_msg)
         
         return {
             "status": "failed",
@@ -217,7 +200,6 @@ def crawl_rss_item_content():
         pending_item.save(update_fields=['crawling_status', 'error_message'])
         
         logfire.error(error_msg)
-        logger.error(error_msg)
         
         return {
             "status": "failed",

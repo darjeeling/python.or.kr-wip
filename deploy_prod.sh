@@ -64,4 +64,4 @@ gunicorn --workers=2  \
 celery -A pythonkr_backend multi start worker1 -c2 -B \
        --loglevel=info \
        --pidfile=/home/pk/celery-%n.pid \
-       --logfile=/home/pk/logs/celery-%n%I.log
+       --logfile=/home/pk/logs/celery-%n-%i.log
