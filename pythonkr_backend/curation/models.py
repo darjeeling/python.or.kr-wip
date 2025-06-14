@@ -300,6 +300,12 @@ class RSSItem(models.Model):
         ('failed', '크롤링 실패'),
     ]
     
+    TRANSLATE_STATUS_CHOICES = [
+        ('pending', '번역 대기'),
+        ('completed', '번역 완료'),
+        ('failed', '번역 실패'),
+    ]
+    
     feed = models.ForeignKey(
         RSSFeed,
         on_delete=models.CASCADE,
@@ -333,6 +339,16 @@ class RSSItem(models.Model):
     error_message = models.TextField(
         blank=True,
         help_text="크롤링 실패 시 에러 메시지"
+    )
+    translate_status = models.CharField(
+        max_length=20,
+        choices=TRANSLATE_STATUS_CHOICES,
+        default='pending',
+        help_text="번역 상태"
+    )
+    translate_error_message = models.TextField(
+        blank=True,
+        help_text="번역 실패 시 에러 메시지"
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

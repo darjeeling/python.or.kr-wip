@@ -141,8 +141,8 @@ class RSSFeedAdmin(admin.ModelAdmin):
 
 @admin.register(RSSItem)
 class RSSItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'feed', 'crawling_status', 'author', 'pub_date', 'crawled_at', 'created_at')
-    list_filter = ('feed', 'crawling_status', 'pub_date', 'created_at', 'author')
+    list_display = ('title', 'feed', 'crawling_status', 'translate_status', 'author', 'pub_date', 'crawled_at', 'created_at')
+    list_filter = ('feed', 'crawling_status', 'translate_status', 'pub_date', 'created_at', 'author')
     search_fields = ('title', 'description', 'author', 'link')
     readonly_fields = ('created_at', 'crawled_at')
     date_hierarchy = 'pub_date'
@@ -157,6 +157,9 @@ class RSSItemAdmin(admin.ModelAdmin):
         }),
         ('Crawling Status', {
             'fields': ('crawling_status', 'crawled_content', 'crawled_at', 'error_message'),
+        }),
+        ('Translation Status', {
+            'fields': ('translate_status', 'translate_error_message'),
         }),
         ('Metadata', {
             'fields': ('guid', 'pub_date', 'created_at'),
