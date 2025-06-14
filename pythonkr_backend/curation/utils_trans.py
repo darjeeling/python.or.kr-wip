@@ -54,7 +54,14 @@ def translate_rssitem(rss_item_id: int):
     )
     
     # Run translation
-    result = agent.run_sync(content)
+    try:
+        result = agent.run_sync(content)
+    except Exception as e:
+        # Set RSS item status to failed and save error message
+        rss_item.crawling_status = 'failed'
+        rss_item.translate_error_message = str(e)
+        rss_item.save(update_fields=['crawling_status', 'translate_error_message'])
+        raise
     
     # Create TranslatedContent instance
     translated_content = TranslatedContent(
