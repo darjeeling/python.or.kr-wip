@@ -511,7 +511,7 @@ class LLMService(models.Model):
                     model_name=model_key,
                     date__gte=start_of_day_utc
                 ).aggregate(
-                    total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens')),
+                    total_tokens=models.Sum(models.F('total_tokens')),
                     total_requests=models.Count('id')
                 )
                 
@@ -536,7 +536,7 @@ class LLMService(models.Model):
                 model_name__in=combined_models,
                 date__gte=today_start
             ).aggregate(
-                total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens'))
+                total_tokens=models.Sum(models.F('total_tokens'))
             )
             combined_tokens = combined_usage['total_tokens'] or 0
             
@@ -557,7 +557,7 @@ class LLMService(models.Model):
                         model_name=model_key,
                         date__gte=today_start
                     ).aggregate(
-                        total_tokens=models.Sum(models.F('input_tokens') + models.F('output_tokens'))
+                        total_tokens=models.Sum(models.F('total_tokens'))
                     )
                     total_tokens = today_usage['total_tokens'] or 0
                     
@@ -590,6 +590,10 @@ class LLMUsage(models.Model):
     )
     output_tokens = models.PositiveIntegerField(
         help_text="출력 토큰 수"
+    )
+    total_tokens = models.PositiveIntegerField(
+        help_text="총 토큰 수"
+        # gemini 가 다른 경우가 있어서 별도로 저장.
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
