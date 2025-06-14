@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import Article, Category, RSSFeed, RSSItem, LLMService, LLMUsage
+from .models import Article, Category, RSSFeed, RSSItem, LLMService, LLMUsage, TranslatedContent
 
 
 @admin.register(Category)
@@ -213,3 +213,31 @@ class LLMUsageAdmin(admin.ModelAdmin):
     
     def has_change_permission(self, request, obj=None):
         return False
+
+
+@admin.register(TranslatedContent)
+class TranslatedContentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'author', 'written_date', 'model_name', 'source_rss_item', 'created_at')
+    list_filter = ('written_date', 'model_name', 'created_at', 'author')
+    search_fields = ('title', 'slug', 'description', 'author', 'source_url')
+    readonly_fields = ('created_at', 'updated_at')
+    date_hierarchy = 'written_date'
+    
+    fieldsets = (
+        ('Content Information', {
+            'fields': ('title', 'slug', 'description', 'tags', 'author', 'written_date')
+        }),
+        ('Content File', {
+            'fields': ('content',)
+        }),
+        ('Source Information', {
+            'fields': ('source_rss_item', 'source_url', 'model_name')
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('source_rss_item', 'source_rss_item__feed')
