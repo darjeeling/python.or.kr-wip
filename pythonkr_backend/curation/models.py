@@ -10,7 +10,6 @@ import pytz
 
 def rss_item_upload_path(instance, filename):
     """Generate upload path for RSS item crawled content"""
-    from datetime import datetime
     now = datetime.now()
     return f"rssitem-crawling/{now.year}/{now.month:02d}/{instance.id}-crawl.md"
 
@@ -604,3 +603,62 @@ class LLMUsage(models.Model):
         verbose_name = "LLM Usage"
         verbose_name_plural = "LLM Usage"
         ordering = ['-date', '-created_at']
+
+def translated_item_upload_path(instance, filename):
+    """Generate upload path for RSS item translated content"""
+    now = datetime.now()
+    return f"tr/{now.year}/{now.month:02d}/{instance.id}-ko.md"
+
+
+class TranslatedContent(models.Model):
+    title = models.CharField(
+        max_length=512,
+        help_text="제목"
+    )
+    slug = models.SlugField(
+        max_length=512,
+        help_text="slug"
+    )
+    description = models.TextField(
+        help_text="설명"
+    )
+    tags = models.JSONField(
+        default=list,
+        help_text="태그"
+    )
+    written_date = models.DateField(
+        help_text="작성 일자",
+        blank=True,
+        null=True,
+    )
+    author = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="작성자"
+    )
+    content = models.FileField(
+        upload_to=translated_item_upload_path,
+        blank=True,
+        null=True,
+        help_text="번역된 마크다운 콘텐츠 파일"
+    )
+
+    model_name = models.CharField(
+        max_length=100,
+        help_text="사용된 모델명"
+    )
+
+    source_rss_item = models.ForeignKey(
+        RSSItem,
+        on_delete=models.CASCADE,
+        related_name="translated_contents",
+        null=True,
+        help_text="원본 RSS 아이템"
+    )
+    source_url = models.URLField(
+        help_text="원본 URL"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
