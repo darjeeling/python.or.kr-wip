@@ -61,18 +61,11 @@ sha_service_version = os.environ.get("SHA")
 # check WSGI environment
 IS_PRODUCTION_SERVER = os.environ.get('IS_WSGI_ENVIRONMENT', 'False') == 'True'
 
-IN_CELERY_WORKER_PROCESS = sys.argv and 'worker' in sys.argv
-
-if IN_CELERY_WORKER_PROCESS:
-    print('Im in Celery worker')
-
 # logfire settings
 if IS_PRODUCTION_SERVER:
     logfire.configure(environment='prod', service_name="web", service_version=sha_service_version)
     logfire.instrument_django()
     logfire.instrument_system_metrics()
-    #logfire.instrument_psycopg('psycopg')
-print(f"sys.argv: {sys.argv}")
 
 # celery 
 CELERY_BROKER_PASSWORD = os.environ.get("CELERY_BROKER_PASSWORD","FALSE")

@@ -22,12 +22,12 @@ app.autodiscover_tasks()
 
 @worker_init.connect()  
 def init_worker(*args, **kwargs):
-    logfire.configure(service_name="celery-worker", send_to_logfire='if-token-present')  
+    logfire.configure(environment='prod',service_name="celery-worker", send_to_logfire='if-token-present')  
     logfire.instrument_celery()
     logfire.instrument_pydantic_ai()
 
 @beat_init.connect()  
 def init_beat(*args, **kwargs):
-    logfire.configure(service_name="celery-beat", send_to_logfire='if-token-present')  
+    logfire.configure(environment='prod',service_name="celery-beat", send_to_logfire='if-token-present')  
     logfire.instrument_celery()
     logfire.instrument_pydantic_ai()
