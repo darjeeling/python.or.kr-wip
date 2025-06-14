@@ -67,6 +67,7 @@ if IS_PRODUCTION_SERVER:
     logfire.instrument_django()
     logfire.instrument_system_metrics()
 #logfire.instrument_psycopg('psycopg')
+print(f"sys.argv: {sys.argv}")
 
 # celery 
 CELERY_BROKER_PASSWORD = os.environ.get("CELERY_BROKER_PASSWORD","FALSE")
