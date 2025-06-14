@@ -33,9 +33,9 @@ export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py collectstatic  --clear --noinput
 
 # stop celery worker with beat
-celery -A pythonkr_backend multi stop worker1 -c2 -B \
+celery -A pythonkr_backend multi stop worker -c2 -B \
        --pidfile=/home/pk/celery-%n.pid \
-       --logfile=/home/pk/logs/celery-%n%I.log
+       --logfile=/home/pk/logs/celery-%n-%i.log
 
 # shutdown exist gunicorn
 if [ -f ${PID_FILE} ]; then
