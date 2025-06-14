@@ -7,6 +7,7 @@ from datetime import datetime, timezone, timedelta
 from django.utils import timezone as django_timezone
 from django.core.files.base import ContentFile
 from .models import RSSFeed, RSSItem
+from .utils_trans import translate_rssitem
 
 def crawl_all_rss_feeds():
     """모든 활성화된 RSS 피드를 크롤링합니다."""
@@ -198,6 +199,58 @@ def crawl_rss_item_content():
         pending_item.crawling_status = 'failed'
         pending_item.error_message = error_msg
         pending_item.save(update_fields=['crawling_status', 'error_message'])
+        
+        logfire.error(error_msg)
+        
+        return {
+            "status": "failed",
+            "item_id": pending_item.id,
+            "error": error_msg
+        }
+
+
+@shared_task
+def translate_pending_rss_item():
+    """크롤링이 완료되고 번역 대기 상태인 RSS 아이템을 번역하는 태스크 (10분마다 실행)"""
+    logfire.info("Starting RSS item translation")
+    
+    # 크롤링이 완료되고 번역 대기 상태이며 translated_contents가 없는 아이템 1개 가져오기
+    pending_item = RSSItem.objects.filter(
+        crawling_status='completed',
+        translate_status='pending'
+    ).exclude(
+        translated_contents__isnull=False
+    ).order_by('-crawled_at', '-created_at').first()
+    
+    if not pending_item:
+        logfire.info("No pending RSS items to translate")
+        return {"status": "no_items", "message": "No pending items to translate"}
+    
+    logfire.info(f"Translating RSS item: {pending_item.title} ({pending_item.link})")
+    
+    try:
+        # 번역 실행
+        translated_content = translate_rssitem(pending_item.id)
+        
+        # 번역 상태를 완료로 변경
+        pending_item.translate_status = 'completed'
+        pending_item.translate_error_message = ''  # 성공 시 에러 메시지 초기화
+        pending_item.save(update_fields=['translate_status', 'translate_error_message'])
+        
+        logfire.info(f"Successfully translated RSS item: {pending_item.title}")
+        
+        return {
+            "status": "success",
+            "item_id": pending_item.id,
+            "item_title": pending_item.title,
+            "translated_content_id": translated_content.id
+        }
+        
+    except Exception as e:
+        error_msg = f"Error translating RSS item {pending_item.id}: {str(e)}"
+        pending_item.translate_status = 'failed'
+        pending_item.translate_error_message = error_msg
+        pending_item.save(update_fields=['translate_status', 'translate_error_message'])
         
         logfire.error(error_msg)
         

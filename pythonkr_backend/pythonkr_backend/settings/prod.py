@@ -101,4 +101,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*/10'),  # Every 10 minutes
         'options': {'queue': 'celery'}
     },
+    'translate-pending-rss-item': {
+        'task': 'curation.tasks.translate_pending_rss_item',
+        'schedule': crontab(minute='*/10'),  # Every 10 minutes
+        'options': {'queue': 'celery'}
+    },
 }
