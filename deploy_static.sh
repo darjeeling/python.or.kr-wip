@@ -19,7 +19,7 @@ export DJANGO_SETTINGS_MODULE="pythonkr_backend.settings.prod"
 ./manage.py build
 
 cd ~/bakery_static/build
-rsync -arv ./ ~/git-python.or.kr/web/
+rsync -arv --exclude ./tr --exclude ./rssitem-crawling ./ ~/git-python.or.kr/web/
 cd ~/git-python.or.kr/web
 git add ./
 git commit -m "upload"
