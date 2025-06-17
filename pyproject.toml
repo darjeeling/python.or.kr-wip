@@ -36,6 +36,7 @@ pythonpath = ["pythonkr_backend"]
 testpaths = [
     "pythonkr_backend/pythonkr_backend",
     "pythonkr_backend/pythonkr",
+    "pythonkr_backend/curation",
 ]
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 
