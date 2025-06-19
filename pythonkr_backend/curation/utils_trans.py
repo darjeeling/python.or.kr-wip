@@ -95,26 +95,26 @@ def translate_rssitem(rss_item_id: int):
     
     return translated_content
 
-class PyCondersSource(BaseModel):
-    title: str = Field(description="The title of curated article title")
-    summary: str = Field(
-        description="summary of curated article"
-    )
-    curated_source_url: str = Field(description="url of curated source")
-    content_source_type: str = Field(description="type of curated contents in ‘sponsor’,’course’,’release’,’news’,’article’,’others’,’project’,’tutorial’,’event’ ")
-    author: str = Field(description="author of curated article")
-
-class PyCondersWeeklyResult(BaseModel):
-    issue_number: str = Field(description="number of issue")
-    published_date: date = Field(description="The published date of the weekly article")
-    issues: list[PyCondersSource] = Field(description="issues of the newletters")
-
-
-system_prompt = "You are an AI assistant specialized in extracting core curated content from a given weekly newsletter URL and clearly separating each content item."
-
-system_prompt = "You are an AI assistant specialized in extacting core curated content from a given weekly newsletter html and clearly separating each content item."
-
-system_prompt = "You are an AI assistant specialized in extracting core curated content from a given weekly newsletter markdown and clearly separating each content item."
-agent = Agent("google-gla:gemini-2.5-flash-preview-04-17",
-                system_prompt=system_prompt,
-               output_type=PyCondersWeeklyResult)
+# class PyCondersSource(BaseModel):
+#     title: str = Field(description="The title of curated article title")
+#     summary: str = Field(
+#         description="summary of curated article"
+#     )
+#     curated_source_url: str = Field(description="url of curated source")
+#     content_source_type: str = Field(description="type of curated contents in ‘sponsor’,’course’,’release’,’news’,’article’,’others’,’project’,’tutorial’,’event’ ")
+#     author: str = Field(description="author of curated article")
+# 
+# class PyCondersWeeklyResult(BaseModel):
+#     issue_number: str = Field(description="number of issue")
+#     published_date: date = Field(description="The published date of the weekly article")
+#     issues: list[PyCondersSource] = Field(description="issues of the newletters")
+# 
+# 
+# system_prompt = "You are an AI assistant specialized in extracting core curated content from a given weekly newsletter URL and clearly separating each content item."
+# 
+# system_prompt = "You are an AI assistant specialized in extacting core curated content from a given weekly newsletter html and clearly separating each content item."
+# 
+# system_prompt = "You are an AI assistant specialized in extracting core curated content from a given weekly newsletter markdown and clearly separating each content item."
+# agent = Agent("google-gla:gemini-2.5-flash-preview-04-17",
+#                 system_prompt=system_prompt,
+#                output_type=PyCondersWeeklyResult)
