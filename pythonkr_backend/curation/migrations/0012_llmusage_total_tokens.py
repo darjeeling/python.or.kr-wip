@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0011_alter_llmusage_date'),
+        ("curation", "0011_alter_llmusage_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='llmusage',
-            name='total_tokens',
-            field=models.PositiveIntegerField(default=0, help_text='총 토큰 수'),
+            model_name="llmusage",
+            name="total_tokens",
+            field=models.PositiveIntegerField(default=0, help_text="총 토큰 수"),
             preserve_default=False,
         ),
     ]

@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0001_initial'),
+        ("curation", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
-            name='reading_time_minutes',
-            field=models.PositiveIntegerField(blank=True, help_text='Estimated reading time in minutes.', null=True),
+            model_name="article",
+            name="reading_time_minutes",
+            field=models.PositiveIntegerField(
+                blank=True, help_text="Estimated reading time in minutes.", null=True
+            ),
         ),
     ]

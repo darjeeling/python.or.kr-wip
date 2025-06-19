@@ -4,20 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0013_translatedcontent'),
+        ("curation", "0013_translatedcontent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rssitem',
-            name='translate_error_message',
-            field=models.TextField(blank=True, help_text='번역 실패 시 에러 메시지'),
+            model_name="rssitem",
+            name="translate_error_message",
+            field=models.TextField(blank=True, help_text="번역 실패 시 에러 메시지"),
         ),
         migrations.AddField(
-            model_name='rssitem',
-            name='translate_status',
-            field=models.CharField(choices=[('pending', '번역 대기'), ('completed', '번역 완료'), ('failed', '번역 실패')], default='pending', help_text='번역 상태', max_length=20),
+            model_name="rssitem",
+            name="translate_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "번역 대기"),
+                    ("completed", "번역 완료"),
+                    ("failed", "번역 실패"),
+                ],
+                default="pending",
+                help_text="번역 상태",
+                max_length=20,
+            ),
         ),
     ]

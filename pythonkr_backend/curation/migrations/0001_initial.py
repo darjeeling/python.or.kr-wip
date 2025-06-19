@@ -4,22 +4,47 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Article',
+            name="Article",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.URLField(help_text='The unique URL of the article.', max_length=2048, unique=True)),
-                ('title', models.CharField(blank=True, help_text='Article title (can be fetched automatically or entered manually).', max_length=512)),
-                ('summary', models.TextField(blank=True, help_text='AI-generated summary of the article.')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "url",
+                    models.URLField(
+                        help_text="The unique URL of the article.",
+                        max_length=2048,
+                        unique=True,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True,
+                        help_text="Article title (can be fetched automatically or entered manually).",
+                        max_length=512,
+                    ),
+                ),
+                (
+                    "summary",
+                    models.TextField(
+                        blank=True, help_text="AI-generated summary of the article."
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
     ]

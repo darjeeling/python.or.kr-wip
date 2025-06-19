@@ -11,9 +11,9 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pythonkr_backend.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pythonkr_backend.settings")
 
 # setup environment for logfire setup
-os.environ['IS_ASGI_ENVIRONMENT'] = 'True'
+os.environ["IS_ASGI_ENVIRONMENT"] = "True"
 
 application = get_asgi_application()

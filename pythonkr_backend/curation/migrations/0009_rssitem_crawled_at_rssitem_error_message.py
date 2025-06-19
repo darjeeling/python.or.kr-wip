@@ -4,20 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0008_rssitem_crawled_content_rssitem_crawling_status'),
+        ("curation", "0008_rssitem_crawled_content_rssitem_crawling_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rssitem',
-            name='crawled_at',
-            field=models.DateTimeField(blank=True, help_text='크롤링 완료 시간', null=True),
+            model_name="rssitem",
+            name="crawled_at",
+            field=models.DateTimeField(
+                blank=True, help_text="크롤링 완료 시간", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='rssitem',
-            name='error_message',
-            field=models.TextField(blank=True, help_text='크롤링 실패 시 에러 메시지'),
+            model_name="rssitem",
+            name="error_message",
+            field=models.TextField(blank=True, help_text="크롤링 실패 시 에러 메시지"),
         ),
     ]

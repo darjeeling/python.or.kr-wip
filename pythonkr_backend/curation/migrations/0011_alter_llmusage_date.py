@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0010_llmservice_llmusage'),
+        ("curation", "0010_llmservice_llmusage"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='llmusage',
-            name='date',
-            field=models.DateTimeField(auto_now_add=True, help_text='사용 날짜'),
+            model_name="llmusage",
+            name="date",
+            field=models.DateTimeField(auto_now_add=True, help_text="사용 날짜"),
         ),
     ]

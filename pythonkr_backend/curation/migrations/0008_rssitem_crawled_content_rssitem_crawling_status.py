@@ -5,20 +5,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0007_crawlingsources_rssfeed_crawlingsite_crawlurl_and_more'),
+        ("curation", "0007_crawlingsources_rssfeed_crawlingsite_crawlurl_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rssitem',
-            name='crawled_content',
-            field=models.FileField(blank=True, help_text='크롤링된 마크다운 콘텐츠 파일', null=True, upload_to=curation.models.rss_item_upload_path),
+            model_name="rssitem",
+            name="crawled_content",
+            field=models.FileField(
+                blank=True,
+                help_text="크롤링된 마크다운 콘텐츠 파일",
+                null=True,
+                upload_to=curation.models.rss_item_upload_path,
+            ),
         ),
         migrations.AddField(
-            model_name='rssitem',
-            name='crawling_status',
-            field=models.CharField(choices=[('pending', '크롤링 대기'), ('completed', '크롤링 완료'), ('failed', '크롤링 실패')], default='pending', help_text='크롤링 상태', max_length=20),
+            model_name="rssitem",
+            name="crawling_status",
+            field=models.CharField(
+                choices=[
+                    ("pending", "크롤링 대기"),
+                    ("completed", "크롤링 완료"),
+                    ("failed", "크롤링 실패"),
+                ],
+                default="pending",
+                help_text="크롤링 상태",
+                max_length=20,
+            ),
         ),
     ]

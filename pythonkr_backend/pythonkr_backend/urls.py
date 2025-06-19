@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 import os
 from django.contrib import admin
 from django.urls import path, include
@@ -32,7 +33,11 @@ urlpatterns = [
     path("cms/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("__reload__/", include("django_browser_reload.urls")),
+    path("", include("curation.urls")),
     path("", include(wagtail_urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-urlpatterns += static(settings.MEDIA_URL + 'images/', document_root=os.path.join(settings.MEDIA_ROOT, 'images'))
+urlpatterns += static(
+    settings.MEDIA_URL + "images/",
+    document_root=os.path.join(settings.MEDIA_ROOT, "images"),
+)

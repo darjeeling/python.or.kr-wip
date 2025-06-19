@@ -27,6 +27,7 @@ class PKBasePage(Page):
 
         return context
 
+
 class PKSponsors(PKBasePage):
     content = RichTextField()
     is_looking_for_sponsors = models.BooleanField(default=False)
@@ -37,6 +38,7 @@ class PKSponsors(PKBasePage):
         FieldPanel("content"),
         FieldPanel("is_looking_for_sponsors"),
     ]
+
 
 class PKPage(PKBasePage):
     template = "pythonkr/pk_page.html"

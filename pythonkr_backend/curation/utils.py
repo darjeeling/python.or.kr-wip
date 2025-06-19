@@ -1,18 +1,17 @@
 import httpx
 import llm
-from pydantic import BaseModel, Field
-from pydantic_ai import Agent
-from datetime import date, datetime, time, timedelta
+from pydantic import BaseModel
 
 import os
 
-from django.core.files.base import ContentFile
 
 
 class Result(BaseModel):
     categories: list[str]
 
+
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
 
 def fetch_content_from_url(url: str) -> str:
     """
@@ -24,21 +23,22 @@ def fetch_content_from_url(url: str) -> str:
     Returns:
         str: The content fetched from the URL.
     """
-    llm_friendly_jina_ai_url = f'https://r.jina.ai/{url}'
+    llm_friendly_jina_ai_url = f"https://r.jina.ai/{url}"
     response = httpx.get(llm_friendly_jina_ai_url)
     return response.text
 
 
 def parse_contents(contents: str):
-    headers, markdown_body = contents.split("Markdown Content:",1)
+    headers, markdown_body = contents.split("Markdown Content:", 1)
     header = {}
     for header_line in headers.splitlines():
         if header_line.strip() != "":
-            header_name, header_value =  header_line.split(":", 1)
+            header_name, header_value = header_line.split(":", 1)
             header[header_name.strip()] = header_value.strip()
-    # most case 
+    # most case
     # Title, URL Source
     return header, markdown_body
+
 
 def get_summary_from_url(url: str):
     contents = fetch_content_from_url(url)
@@ -47,10 +47,11 @@ def get_summary_from_url(url: str):
     response = model.prompt(
         contents,
         system="""make readable title and summary in korean as markdown format,
-                summary should be list of minimum 3, maximum 5 items"""
+                summary should be list of minimum 3, maximum 5 items""",
     )
-    #header, markdown_body = parse_contents(contents)
+    # header, markdown_body = parse_contents(contents)
     return response.text()
+
 
 def translate_to_korean(content: str):
     english_text = content

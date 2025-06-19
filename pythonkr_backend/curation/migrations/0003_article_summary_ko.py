@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0002_article_reading_time_minutes'),
+        ("curation", "0002_article_reading_time_minutes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
-            name='summary_ko',
-            field=models.TextField(blank=True, help_text='Korean translation of the summary (via OpenAI).'),
+            model_name="article",
+            name="summary_ko",
+            field=models.TextField(
+                blank=True, help_text="Korean translation of the summary (via OpenAI)."
+            ),
         ),
     ]

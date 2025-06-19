@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0005_category'),
+        ("curation", "0005_category"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='article',
-            name='categories',
-            field=models.ManyToManyField(blank=True, help_text='Select one or more categories for this article.', related_name='articles', to='curation.category'),
+            model_name="article",
+            name="categories",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Select one or more categories for this article.",
+                related_name="articles",
+                to="curation.category",
+            ),
         ),
     ]

@@ -11,9 +11,9 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pythonkr_backend.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pythonkr_backend.settings")
 
 # setup environment for logfire setup
-os.environ['IS_WSGI_ENVIRONMENT'] = 'True'
+os.environ["IS_WSGI_ENVIRONMENT"] = "True"
 
 application = get_wsgi_application()

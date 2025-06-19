@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('curation', '0003_article_summary_ko'),
+        ("curation", "0003_article_summary_ko"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='article',
-            name='reading_time_minutes',
-            field=models.PositiveIntegerField(blank=True, help_text='Estimated reading time in minutes (based on full article content).', null=True),
+            model_name="article",
+            name="reading_time_minutes",
+            field=models.PositiveIntegerField(
+                blank=True,
+                help_text="Estimated reading time in minutes (based on full article content).",
+                null=True,
+            ),
         ),
     ]
