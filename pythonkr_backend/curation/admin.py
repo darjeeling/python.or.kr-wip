@@ -283,12 +283,12 @@ class LLMUsageAdmin(admin.ModelAdmin):
 class TranslatedContentAdmin(admin.ModelAdmin):
     list_display = (
         "title",
+        "view_link",
         "slug",
         "author",
         "written_date",
         "model_name",
         "source_rss_item",
-        "view_link",
         "created_at",
     )
     list_filter = ("written_date", "model_name", "created_at", "author")
