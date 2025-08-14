@@ -26,6 +26,11 @@ def init_worker(*args, **kwargs):
         environment="prod",
         service_name="celery-worker",
         send_to_logfire="if-token-present",
+        code_source=logfire.CodeSource(
+            repository = 'https://github.com/pythonkr/python.or.kr-wip',
+            revision = sha_service_version,
+            root_path = '/'
+        )
     )
     logfire.instrument_celery()
     logfire.instrument_pydantic_ai()
@@ -37,6 +42,11 @@ def init_beat(*args, **kwargs):
         environment="prod",
         service_name="celery-beat",
         send_to_logfire="if-token-present",
+        code_source=logfire.CodeSource(
+            repository = 'https://github.com/pythonkr/python.or.kr-wip',
+            revision = sha_service_version,
+            root_path = '/'
+        )
     )
     logfire.instrument_celery()
     logfire.instrument_pydantic_ai()
