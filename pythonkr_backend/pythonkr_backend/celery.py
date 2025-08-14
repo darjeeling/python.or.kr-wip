@@ -28,8 +28,7 @@ def init_worker(*args, **kwargs):
         send_to_logfire="if-token-present",
         code_source=logfire.CodeSource(
             repository = 'https://github.com/pythonkr/python.or.kr-wip',
-            revision = sha_service_version,
-            root_path = '/'
+            revision = 'main',
         )
     )
     logfire.instrument_celery()
@@ -44,8 +43,7 @@ def init_beat(*args, **kwargs):
         send_to_logfire="if-token-present",
         code_source=logfire.CodeSource(
             repository = 'https://github.com/pythonkr/python.or.kr-wip',
-            revision = sha_service_version,
-            root_path = '/'
+            revision = 'main',
         )
     )
     logfire.instrument_celery()

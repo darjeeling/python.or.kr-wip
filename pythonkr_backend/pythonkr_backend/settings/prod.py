@@ -66,7 +66,6 @@ if IS_PRODUCTION_SERVER:
         code_source=logfire.CodeSource(
             repository = 'https://github.com/pythonkr/python.or.kr-wip',
             revision = sha_service_version,
-            root_path = '/'
         )
     )
     logfire.instrument_django()
