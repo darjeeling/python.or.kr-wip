@@ -62,7 +62,12 @@ IS_PRODUCTION_SERVER = os.environ.get("IS_WSGI_ENVIRONMENT", "False") == "True"
 # logfire settings
 if IS_PRODUCTION_SERVER:
     logfire.configure(
-        environment="prod", service_name="web", service_version=sha_service_version
+        environment="prod", service_name="web", service_version=sha_service_version,
+        code_source=logfire.CodeSource(
+            repository = 'https://github.com/pythonkr/python.or.kr-wip',
+            revision = sha_service_version,
+            root_path = '/'
+        )
     )
     logfire.instrument_django()
     logfire.instrument_system_metrics()
