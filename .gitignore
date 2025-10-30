@@ -202,3 +202,4 @@ node_modules/
 # storages
 ./rssitem-crawling/*
 ./tr/*
+./pythonkr_backend/rssitem-crawling/*

@@ -119,16 +119,17 @@ class RSSFeedAdmin(admin.ModelAdmin):
         "name",
         "url",
         "is_active",
+        "is_newsletter",
         "last_fetched",
         "item_count",
         "created_at",
     )
-    list_filter = ("is_active", "created_at", "last_fetched")
+    list_filter = ("is_active", "is_newsletter", "created_at", "last_fetched")
     search_fields = ("name", "url")
     readonly_fields = ("last_fetched", "created_at", "updated_at")
 
     fieldsets = (
-        ("Feed Information", {"fields": ("name", "url", "is_active")}),
+        ("Feed Information", {"fields": ("name", "url", "is_active", "is_newsletter")}),
         (
             "Status",
             {
@@ -177,8 +178,10 @@ class RSSItemAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "feed",
+        "language",
         "crawling_status",
         "translate_status",
+        "translation_allowed_display",
         "author",
         "pub_date",
         "crawled_at",
@@ -186,44 +189,124 @@ class RSSItemAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "feed",
+        "language",
         "crawling_status",
         "translate_status",
+        "is_translation_allowed",
         "pub_date",
         "created_at",
         "author",
     )
-    search_fields = ("title", "description", "author", "link")
-    readonly_fields = ("created_at", "crawled_at")
+    search_fields = ("title", "description", "author", "link", "license_type")
+    readonly_fields = ("created_at", "crawled_at", "confidence_score")
     date_hierarchy = "pub_date"
 
-    fieldsets = (
-        (
-            "Item Information",
-            {"fields": ("feed", "title", "link", "author", "category")},
-        ),
-        ("Content", {"fields": ("description",), "classes": ("collapse",)}),
-        (
-            "Crawling Status",
-            {
-                "fields": (
-                    "crawling_status",
-                    "crawled_content",
-                    "crawled_at",
-                    "error_message",
-                ),
-            },
-        ),
-        (
-            "Translation Status",
-            {
-                "fields": ("translate_status", "translate_error_message"),
-            },
-        ),
-        (
-            "Metadata",
-            {"fields": ("guid", "pub_date", "created_at"), "classes": ("collapse",)},
-        ),
-    )
+    def get_fieldsets(self, request, obj=None):
+        """Dynamic fieldsets based on content language and analysis status."""
+        base_fieldsets = [
+            (
+                "⚠️ 법적 고지",
+                {
+                    "fields": (),
+                    "description": (
+                        "<div style='background-color: #fff3cd; border: 1px solid #ffeaa7; "
+                        "padding: 15px; border-radius: 5px; margin-bottom: 20px;'>"
+                        "<strong>🚨 중요 안내:</strong><br>"
+                        "본 AI 분석 결과는 참고용이며 <strong>법적 효력이 없습니다</strong>. "
+                        "콘텐츠의 최종 사용 결정은 반드시 관리자의 책임하에 이루어져야 하며, "
+                        "필요시 법무 전문가의 자문을 받으시기 바랍니다.<br>"
+                        "<em>AI analysis results are for reference only and have no legal validity. "
+                        "Final content usage decisions must be made under administrator responsibility.</em>"
+                        "</div>"
+                    ),
+                },
+            ),
+            (
+                "Item Information",
+                {"fields": ("feed", "title", "link", "author", "category", "source_item")},
+            ),
+            ("Content", {"fields": ("description",), "classes": ("collapse",)}),
+        ]
+        
+        # Language and processing fields
+        if obj and obj.language:
+            if obj.language == 'ko':
+                # Korean content - show summary
+                base_fieldsets.append((
+                    "🇰🇷 Korean Content Processing",
+                    {
+                        "fields": ("language", "summary"),
+                        "description": "한국어 콘텐츠는 AI 요약이 생성됩니다.",
+                    },
+                ))
+            else:
+                # Foreign content - show copyright analysis
+                base_fieldsets.append((
+                    "🌐 Copyright Analysis (Foreign Content)",
+                    {
+                        "fields": (
+                            "language",
+                            "license_type",
+                            "is_translation_allowed",
+                            "attribution_required",
+                            "confidence_score",
+                            "reasoning",
+                        ),
+                        "description": "외국어 콘텐츠의 저작권 분석 결과입니다.",
+                    },
+                ))
+        else:
+            # No language detected yet
+            base_fieldsets.append((
+                "🔍 Content Analysis",
+                {
+                    "fields": ("language",),
+                    "description": "콘텐츠 분석이 완료되면 언어별 처리 결과가 표시됩니다.",
+                },
+            ))
+        
+        # Standard status fields
+        base_fieldsets.extend([
+            (
+                "Crawling Status",
+                {
+                    "fields": (
+                        "crawling_status",
+                        "crawled_content",
+                        "crawled_at",
+                        "error_message",
+                    ),
+                },
+            ),
+            (
+                "Translation Status",
+                {
+                    "fields": ("translate_status", "translate_error_message"),
+                },
+            ),
+            (
+                "Metadata",
+                {"fields": ("guid", "pub_date", "created_at"), "classes": ("collapse",)},
+            ),
+        ])
+        
+        return base_fieldsets
+
+    @admin.display(description="Translation Allowed", boolean=True)
+    def translation_allowed_display(self, obj):
+        """Display translation permission status with visual indicator."""
+        if obj.language == 'ko':
+            return None  # Not applicable for Korean content
+        return obj.is_translation_allowed
+
+    @admin.display(description="Source Type")
+    def source_type_display(self, obj):
+        """Display whether item is from newsletter or regular feed."""
+        if obj.source_item:
+            return "📧 Newsletter Extract"
+        elif obj.feed.is_newsletter:
+            return "📧 Newsletter Original"
+        return "📰 Regular Feed"
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("feed")

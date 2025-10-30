@@ -26,14 +26,34 @@ def translate_rssitem(rss_item_id: int):
 
     """
     Translate an RSS item to Korean using AI and save as TranslatedContent.
+    Only translates if copyright analysis permits translation.
     
     Args:
-        rss_item: RSSItem instance to translate
+        rss_item_id: ID of RSSItem instance to translate
         
     Returns:
         TranslatedContent: The created translated content instance
+        
+    Raises:
+        ValueError: If translation is not permitted or preconditions not met
     """
     rss_item = RSSItem.objects.get(id=rss_item_id)
+
+    # Check if translation is permitted based on copyright analysis
+    if not rss_item.is_translation_allowed:
+        raise ValueError(
+            f"Translation not permitted for this content. "
+            f"License: {rss_item.license_type}, "
+            f"Confidence: {rss_item.confidence_score or 0.0}"
+        )
+
+    # Ensure language analysis has been performed
+    if not rss_item.language:
+        raise ValueError("Language detection must be performed before translation")
+
+    # Only translate foreign content (Korean content gets summarized instead)
+    if rss_item.language == 'ko':
+        raise ValueError("Korean content should be summarized, not translated")
 
     # Get LLM provider and model
     provider, model = LLMService.get_llm_provider_model()

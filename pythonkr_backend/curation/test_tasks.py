@@ -365,6 +365,8 @@ class TestRSSCrawlingTasks:
             crawling_status="completed",
             translate_status="pending",
             crawled_at=timezone.now(),
+            is_translation_allowed=True,
+            language="en",
         )
 
         # Mock successful translation
@@ -391,7 +393,7 @@ class TestRSSCrawlingTasks:
         result = translate_pending_rss_item()
 
         assert result["status"] == "no_items"
-        assert result["message"] == "No pending items to translate"
+        assert result["message"] == "No items eligible for translation"
 
     @patch("curation.tasks.translate_rssitem")
     def test_translate_pending_rss_item_translation_error(self, mock_translate):
@@ -403,6 +405,8 @@ class TestRSSCrawlingTasks:
             crawling_status="completed",
             translate_status="pending",
             crawled_at=timezone.now(),
+            is_translation_allowed=True,
+            language="en",
         )
 
         mock_translate.side_effect = Exception("Translation failed")

@@ -12,8 +12,10 @@ dependencies = [
     "django-celery-results>=2.6.0",
     "django-tailwind[reload]>=3.8.0",
     "feedparser>=6.0.11",
+    "google-generativeai>=0.8.5",
     "gunicorn>=23.0.0",
     "httpx>=0.28.1",
+    "langdetect>=1.0.9",
     "llm>=0.24.2",
     "llm-gemini>=0.18.1",
     "logfire[celery,django,psycopg,system-metrics]>=3.16.0",
@@ -36,9 +38,8 @@ dependencies = [
 DJANGO_SETTINGS_MODULE = "pythonkr_backend.settings"
 pythonpath = ["pythonkr_backend"]
 testpaths = [
-    "pythonkr_backend/pythonkr_backend",
-    "pythonkr_backend/pythonkr",
     "pythonkr_backend/curation",
+    "pythonkr_backend/pythonkr",
 ]
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 

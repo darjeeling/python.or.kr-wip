@@ -329,6 +329,10 @@ class RSSFeed(models.Model):
     name = models.CharField(max_length=200, help_text="RSS 피드 이름")
     url = models.URLField(unique=True, help_text="RSS 피드 URL")
     is_active = models.BooleanField(default=True, help_text="활성화 여부")
+    is_newsletter = models.BooleanField(
+        default=False, 
+        help_text="뉴스레터형 피드 여부 (개별 링크 추출이 필요한 경우)"
+    )
     last_fetched = models.DateTimeField(
         null=True, blank=True, help_text="마지막 크롤링 시간"
     )
@@ -369,6 +373,52 @@ class RSSItem(models.Model):
     category = models.CharField(max_length=200, blank=True, help_text="카테고리")
     guid = models.CharField(max_length=500, blank=True, unique=True, help_text="GUID")
     pub_date = models.DateTimeField(null=True, blank=True, help_text="발행일")
+    
+    # Language detection and content processing fields
+    language = models.CharField(
+        max_length=10, 
+        blank=True, 
+        help_text="감지된 콘텐츠 언어 코드 (ko, en, ja 등)"
+    )
+    summary = models.TextField(
+        blank=True, 
+        help_text="한국어 콘텐츠의 AI 생성 요약"
+    )
+    
+    # Copyright analysis fields (for foreign content)
+    license_type = models.CharField(
+        max_length=50, 
+        blank=True, 
+        help_text="분석된 라이선스 종류"
+    )
+    is_translation_allowed = models.BooleanField(
+        default=False, 
+        help_text="번역 허용 여부"
+    )
+    attribution_required = models.BooleanField(
+        default=False, 
+        help_text="출처 표기 필요 여부"
+    )
+    confidence_score = models.FloatField(
+        null=True, 
+        blank=True, 
+        help_text="저작권 분석 결과의 신뢰도 (0.0-1.0)"
+    )
+    reasoning = models.TextField(
+        blank=True, 
+        help_text="AI의 저작권 분석 근거"
+    )
+    
+    # Newsletter source tracking
+    source_item = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='extracted_items',
+        help_text="뉴스레터에서 추출된 경우 원본 RSSItem"
+    )
+    
     crawling_status = models.CharField(
         max_length=20,
         choices=CRAWLING_STATUS_CHOICES,

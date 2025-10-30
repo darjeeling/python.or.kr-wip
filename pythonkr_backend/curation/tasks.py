@@ -221,23 +221,131 @@ def crawl_rss_item_content():
 
 
 @shared_task
+def process_newsletter_items():
+    """뉴스레터 아이템에서 개별 링크를 추출하는 태스크 (10분마다 실행)"""
+    from .utils_newsletter import process_newsletter_rss_item
+    
+    logfire.info("Starting newsletter processing")
+    
+    # 뉴스레터 피드에서 크롤링이 완료되었지만 아직 처리되지 않은 아이템 찾기
+    # source_item이 None인 것들은 원본 뉴스레터 아이템
+    pending_newsletter = (
+        RSSItem.objects.filter(
+            feed__is_newsletter=True,
+            crawling_status="completed",
+            source_item__isnull=True  # 추출된 아이템이 아닌 원본 뉴스레터
+        )
+        .exclude(extracted_items__isnull=False)  # 이미 링크가 추출된 것은 제외
+        .order_by("-crawled_at", "-created_at")
+        .first()
+    )
+    
+    if not pending_newsletter:
+        logfire.info("No newsletter items to process")
+        return {"status": "no_items", "message": "No newsletter items to process"}
+    
+    logfire.info(f"Processing newsletter: {pending_newsletter.title}")
+    
+    try:
+        result = process_newsletter_rss_item(pending_newsletter.id)
+        
+        if 'error' in result:
+            logfire.error(f"Newsletter processing failed: {result['error']}")
+            return {"status": "failed", "error": result['error']}
+        
+        logfire.info(
+            f"Newsletter processing completed: {result['created_count']} items created "
+            f"from {result['extracted_count']} links"
+        )
+        
+        return {
+            "status": "success",
+            "newsletter_id": pending_newsletter.id,
+            "newsletter_title": pending_newsletter.title,
+            **result
+        }
+        
+    except Exception as e:
+        error_msg = f"Unexpected error processing newsletter {pending_newsletter.id}: {str(e)}"
+        logfire.error(error_msg)
+        return {"status": "failed", "error": error_msg}
+
+
+@shared_task
+def analyze_content_copyright():
+    """크롤링된 콘텐츠의 언어 감지 및 저작권 분석을 수행하는 태스크 (10분마다 실행)"""
+    from .utils_copyright import analyze_content_for_copyright
+    
+    logfire.info("Starting content copyright analysis")
+    
+    # 크롤링이 완료되었지만 언어 분석이 안된 아이템 찾기
+    pending_item = (
+        RSSItem.objects.filter(
+            crawling_status="completed",
+            language=""  # 언어가 아직 감지되지 않은 아이템
+        )
+        .exclude(source_item__isnull=False)  # 뉴스레터에서 추출된 아이템은 제외 (원본만 분석)
+        .order_by("-crawled_at", "-created_at")
+        .first()
+    )
+    
+    if not pending_item:
+        logfire.info("No items pending copyright analysis")
+        return {"status": "no_items", "message": "No items pending analysis"}
+    
+    logfire.info(f"Analyzing content: {pending_item.title}")
+    
+    try:
+        result = analyze_content_for_copyright(pending_item.id)
+        
+        if 'error' in result:
+            logfire.error(f"Content analysis failed: {result['error']}")
+            return {"status": "failed", "error": result['error']}
+        
+        analysis_type = "summary" if result.get('summary') else "copyright"
+        logfire.info(f"Content analysis completed ({analysis_type}): {pending_item.title}")
+        
+        return {
+            "status": "success",
+            "item_id": pending_item.id,
+            "item_title": pending_item.title,
+            "analysis_type": analysis_type,
+            **result
+        }
+        
+    except Exception as e:
+        error_msg = f"Unexpected error analyzing content {pending_item.id}: {str(e)}"
+        logfire.error(error_msg)
+        return {"status": "failed", "error": error_msg}
+
+
+@shared_task
 def translate_pending_rss_item():
-    """크롤링이 완료되고 번역 대기 상태인 RSS 아이템을 번역하는 태스크 (10분마다 실행)"""
+    """외국어 콘텐츠 중 번역이 허용된 RSS 아이템을 번역하는 태스크 (10분마다 실행)"""
     logfire.info("Starting RSS item translation")
 
-    # 크롤링이 완료되고 번역 대기 상태이며 translated_contents가 없는 아이템 1개 가져오기
+    # 크롤링이 완료되고 번역이 허용되며 번역 대기 상태인 아이템 1개 가져오기
     pending_item = (
-        RSSItem.objects.filter(crawling_status="completed", translate_status="pending")
-        .exclude(translated_contents__isnull=False)
+        RSSItem.objects.filter(
+            crawling_status="completed", 
+            translate_status="pending",
+            is_translation_allowed=True,  # Only translate items where translation is allowed
+            language__isnull=False,  # Language must be detected
+        )
+        .exclude(language="ko")  # Exclude Korean content (gets summarized instead)
+        .exclude(translated_contents__isnull=False)  # Don't re-translate
         .order_by("-crawled_at", "-created_at")
         .first()
     )
 
     if not pending_item:
-        logfire.info("No pending RSS items to translate")
-        return {"status": "no_items", "message": "No pending items to translate"}
+        logfire.info("No pending RSS items eligible for translation")
+        return {"status": "no_items", "message": "No items eligible for translation"}
 
-    logfire.info(f"Translating RSS item: {pending_item.title} ({pending_item.link})")
+    logfire.info(
+        f"Translating RSS item: {pending_item.title} "
+        f"(Language: {pending_item.language}, License: {pending_item.license_type})"
+    )
 
     try:
         # 번역 실행
@@ -254,10 +362,24 @@ def translate_pending_rss_item():
             "status": "success",
             "item_id": pending_item.id,
             "item_title": pending_item.title,
+            "language": pending_item.language,
+            "license_type": pending_item.license_type,
             "translated_content_id": translated_content.id,
         }
 
+    except ValueError as e:
+        # Permission or validation errors - mark as failed with specific message
+        error_msg = f"Translation not permitted: {str(e)}"
+        pending_item.translate_status = "failed"
+        pending_item.translate_error_message = error_msg
+        pending_item.save(update_fields=["translate_status", "translate_error_message"])
+
+        logfire.warning(error_msg)
+
+        return {"status": "permission_denied", "item_id": pending_item.id, "error": error_msg}
+
     except Exception as e:
+        # Other errors
         error_msg = f"Error translating RSS item {pending_item.id}: {str(e)}"
         pending_item.translate_status = "failed"
         pending_item.translate_error_message = error_msg

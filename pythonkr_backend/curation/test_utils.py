@@ -211,6 +211,8 @@ class TestUtilsTransFunctions:
             title="Test Article",
             link="https://example.com/test-article",
             crawling_status="completed",
+            is_translation_allowed=True,
+            language="en",
         )
 
         # Mock crawled content file
@@ -276,6 +278,8 @@ class TestUtilsTransFunctions:
             title="Test Article",
             link="https://example.com/test-article",
             crawling_status="completed",
+            is_translation_allowed=True,
+            language="en",
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -290,6 +294,8 @@ class TestUtilsTransFunctions:
             title="Test Article",
             link="https://example.com/test-article",
             crawling_status="completed",
+            is_translation_allowed=True,
+            language="en",
         )
 
         with pytest.raises(ValueError) as exc_info:
@@ -310,6 +316,8 @@ class TestUtilsTransFunctions:
             link="https://example.com/test-article",
             crawling_status="completed",
             translate_status="pending",
+            is_translation_allowed=True,
+            language="en",
         )
 
         # Mock crawled content file
@@ -351,6 +359,8 @@ class TestUtilsTransFunctions:
             title="Test Article",
             link="https://example.com/test-article",
             crawling_status="completed",
+            is_translation_allowed=True,
+            language="en",
         )
 
         # Mock crawled content file
@@ -397,6 +407,8 @@ class TestUtilsTransFunctions:
             title="Test Article",
             link="https://example.com/test-article",
             crawling_status="completed",
+            is_translation_allowed=True,
+            language="en",
         )
 
         # Mock crawled content file
